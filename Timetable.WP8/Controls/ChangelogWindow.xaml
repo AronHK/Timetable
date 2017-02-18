@@ -1,0 +1,54 @@
+﻿<UserControl
+    x:Class="Timetable.ChangelogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="FontSize" Value="19" />
+            </Style>
+            <Style TargetType="Rectangle">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Height" Value="38" />
+                <Setter Property="Width" Value="150" />
+                <Setter Property="Fill" Value="{ThemeResource ContentDialogDimmingThemeBrush}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <TextBlock Name="title" x:Uid="ChangelogTitle" Text="What's new" FontSize="25" />
+        <TextBlock Name="desc" x:Uid="ChangelogDesc" Margin="0 5 0 20" FontSize="18" Text="Description" />
+        <ScrollViewer Name="scroller" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
+            <StackPanel Name="panel">
+                <Rectangle />
+                <TextBlock Margin="10 -33 0 0" Text="v 0.8.2" />
+                <TextBlock x:Uid="Changelog084" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+                
+                <Rectangle />
+                <TextBlock Margin="10 -33 0 0" Text="v 0.8.1.4" />
+                <TextBlock x:Uid="Changelog083" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+                
+                <Rectangle />
+                <TextBlock Margin="10 -33 0 0" Text="v 0.8.1.1" />
+                <TextBlock x:Uid="Changelog082" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+                
+                <Rectangle />
+                <TextBlock Margin="10 -33 0 0" Text="v 0.8.1" />
+                <TextBlock x:Uid="Changelog081" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+
+                <Rectangle />
+                <TextBlock x:Uid="ChangelogInitialTitle" Margin="10 -33 0 0" Text="Initial" />
+                <TextBlock x:Uid="ChangelogInitialWP8" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

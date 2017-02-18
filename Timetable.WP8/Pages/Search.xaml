@@ -1,0 +1,62 @@
+﻿<Page x:Name="page"
+    x:Class="Timetable.Search"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="AutoSuggestBox">
+                <Setter Property="Margin" Value="0 5" />
+                <Setter Property="Width" Value="300" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="5 0 0 0" />
+                <Setter Property="FontFamily" Value="Segoe UI Symbol" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="#FFE4E4E4" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource PhoneAccentBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Rectangle Grid.Row="0" Fill="{ThemeResource PhoneAccentBrush}" Margin="-10, -50, -10, 0"  />
+        <TextBlock Grid.Row="0" Name="title" Margin="15 0" x:Uid="SearchTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="20" Foreground="White" />
+
+        <ProgressRing Grid.Row="1" Margin="0 -90 0 0" Name="inprogress" IsActive="False" Background="{x:Null}" Foreground="White" Height="60" Width="60" />
+
+        <StackPanel Name="panel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 10 150">
+            <StackPanel Orientation="Horizontal" Width="380">
+                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="340" />
+                <Button Name="Getloc1" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -10 0 0" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Width="380">
+                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló"  TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="340" />
+                <Button Name="Getloc2" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -12 0 0" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 40 0">
+                <DatePicker Name="Date" Margin="0 5" Foreground="White" DateChanged="DateChanged" />
+                <TimePicker Name="Time" Margin="0 5" Foreground="White" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar Name="commandbar">
+            <AppBarButton Name="AppbarGo" IsEnabled="False" x:Uid="AppbarSearch" Label="Keresés" Icon="Forward" Click="StartSearch"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Uid="AppbarSettings" Label="Beállítások" Icon="Setting" Click="GotoSettings" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

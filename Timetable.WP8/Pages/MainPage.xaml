@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="Timetable.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="GridViewItem">
+                <Setter Property="Margin" Value="3 4" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="10 5 10 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" FontSize="19" Name="title" x:Uid="Maintitle" Visibility="Collapsed" HorizontalAlignment="Left" FontFamily="Segoe UI Black" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+        <GridView Grid.Row="1" Name="LineList" HorizontalAlignment="Center">
+        </GridView>
+        <TextBlock Grid.Row="1" Name="error" FontSize="19" x:Uid="Notfound" HorizontalAlignment="Center" Margin="0 60 0 0" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+        <Rectangle Grid.RowSpan="2" Name="inprogressbg" Fill="Black" Opacity="0.9" Margin="-50" />
+        <ProgressRing Grid.RowSpan="2" Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource PhoneAccentBrush}" Height="60" Width="60" />
+        <TextBlock Grid.RowSpan="2" Name="inprogresstext" Visibility="Collapsed" x:Uid="Loading" Foreground="{ThemeResource CheckBoxBackgroundThemeBrush}" FontSize="14" />
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Name="AppbarUpdate" x:Uid="AppbarUpdate" Label="Frissítés" Icon="Sync" IsEnabled="False" Click="Update" />
+            <AppBarButton Label="Keresés" x:Uid="AppbarSearch" Icon="Find" Click="StartSearch" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Rate" x:Uid="AppbarRate" Click="OpenRate" />
+                <AppBarButton Label="Beállítások" x:Uid="AppbarSettings" Click="GotoSettings" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="Timetable.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    KeyUp="KeyupEvent">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="GridViewItem">
+                <Setter Property="Margin" Value="3 4" />
+                <Setter Property="IsTabStop" Value="False" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+    
+    <RelativePanel Name="mainpanel" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="10 5 10 0">
+        <TextBlock Text="Saved searches:" Name="title" x:Uid="Maintitle" HorizontalAlignment="Left" FontFamily="Segoe UI Black" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" Margin="0 10" />
+        <GridView RelativePanel.Below="title" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Name="LineList" Margin="0 10 0 0" IsItemClickEnabled="True" ItemClick="itemclick">
+        </GridView>
+        <TextBlock Name="error" Text="ERROR" x:Uid="Notfound" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0 100 0 0" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+        
+        <StackPanel Visibility="Collapsed" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignRightWithPanel="True" Height="32" Name="XboxPanel" Orientation="Horizontal" Padding="1">
+            <Image Name="XIcon" Source="{ThemeResource XIcon}" Height="30" />
+            <TextBlock Name="XboxUpdate" x:Uid="HintUpdate" Text="ERROR" Margin="5, 5, 20, 0" />
+            <Image Source="{ThemeResource YIcon}" Height="30" />
+            <TextBlock x:Uid="HintSearch" Text="ERROR" Margin="5, 5, 20, 0" />
+            <Image Name="MenuIcon" Source="{ThemeResource MenuIcon}" Height="30" />
+            <TextBlock Name="XboxMenu" x:Uid="HintMore" Text="ERROR" Margin="5, 5, 20, 0" />
+            <Image Source="{ThemeResource ViewIcon}" Height="30" />
+            <TextBlock x:Uid="HintSettings" Text="ERROR" Margin="5, 5, 0, 0" />
+        </StackPanel>
+        
+        <Rectangle Name="inprogressbg" Visibility="Visible" Fill="Black" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" Opacity="0.9" Margin="-100" />
+        <ProgressRing Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" Height="60" Width="60" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="0 0 0 100" />
+        <TextBlock Name="inprogresstext" Visibility="Collapsed" x:Uid="Loading" Foreground="{ThemeResource CheckBoxBackgroundThemeBrush}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="0 0 0 -10" FontSize="14" />
+    </RelativePanel>
+    
+    <Page.BottomAppBar>
+        <CommandBar Name="Appbar">
+            <AppBarButton Name="AppbarUpdate" x:Uid="AppbarUpdate" Label="Frissítés" Icon="Sync" IsEnabled="False" Click="Update" />
+            <AppBarButton Label="Keresés" x:Uid="AppbarSearch" Icon="Find" Click="StartSearch" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="É" x:Uid="AppbarRate" Click="Rate" />
+                <AppBarButton Label="V" Name="AppbarFeedback" x:Uid="AppbarFeedback" Click="Feedback" Visibility="Collapsed" />
+                <AppBarButton Label="Beállítások" x:Uid="AppbarSettings" Click="GotoSettings" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

@@ -1,0 +1,125 @@
+﻿<Page
+    x:Class="Timetable.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ToggleSwitch">
+                <Setter Property="Margin" Value="5 -5 0 0" />
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="5 38 0 0" />
+                <Setter Property="FontSize" Value="19" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="20 30 0 0" />
+            </Style>
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="5 10 0 0" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.ColumnSpan="2" Name="titlebg" Fill="{ThemeResource PhoneAccentBrush}" Margin="-10, -50, -10, 0"  />
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Name="title" x:Uid="SettingsTitle"  FontFamily="Segoe UI Black" FontSize="20" Margin="10 0" VerticalAlignment="Center"  Foreground="White" />
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10 0 10 20">
+                <TextBlock Name="title1" x:Uid="Privacy" Text="Location + Network" FontSize="25" Margin="0 10 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+                
+                <TextBlock Name="locationlabel" x:Uid="LocationAccess" Text="Hozzáférés helyadatokhoz" Margin="-120 38 0 0" />
+                <ToggleSwitch x:Name="LocationEnabled" Toggled="LocationEnabled_Toggled" />
+                <TextBlock x:Uid="LocationNote" Name="note1" Text="Helymeghatározás le van tiltva a rendszer által." FontSize="14" Visibility="Collapsed" Margin="5 20 5 0" />
+                <TextBlock x:Uid="LocationLink2" Name="note2" Text="Ugrás a beállításokhoz" Foreground="{ThemeResource PhoneAccentBrush}" Tapped="GotoPrivacySettings" FontSize="14" Visibility="Collapsed" Margin="5 0 5 0"/>
+
+                <TextBlock Name="updatelabel" x:Uid="AutoUpdate" Text="Frissítés korlátozott kapcsolatokon" />
+                <ToggleSwitch x:Name="AlwaysUpdate" Toggled="AlwaysUpdate_Toggled" />
+
+                <TextBlock Name="title2" x:Uid="SearchSettings" Text="Search parameters" FontSize="25" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock Name="exactlabel" Text="Pontos találatok" x:Uid="Exact" />
+                <ToggleSwitch x:Name="Exactres" Toggled="Exactres_Toggled" />
+                <TextBlock x:Uid="ExactNote1" Name="note4" Text="A találatok között a megadott megállókhoz közel induló/érkező járatok is megjelenhetnek." Margin="5 0 0 5" FontSize="14" TextWrapping="Wrap" />
+                <TextBlock x:Uid="ExactNote2" Name="note5" Text="A találatok mindig pontosan megfelelnek a megadott adatoknak, a közeli megállókból induló/érkező járatok figyelmen kívül lesznek hagyva." Margin="5 0 0 5" FontSize="14" TextWrapping="Wrap" Visibility="Collapsed" />
+
+                <TextBlock Name="pricelabel" Text="Jegyár" x:Uid="Price" />
+                <ComboBox x:Name="Price" SelectionChanged="PriceChanged">
+                    <ComboBoxItem Content="100%" />
+                    <ComboBoxItem Content="-50%" />
+                    <ComboBoxItem Content="-90%" />
+                    <ComboBoxItem x:Uid="Free" />
+                </ComboBox>
+
+                <TextBlock x:Uid="Showchange" Name="linechangelabel" Text="Átszállások mutatása" />
+                <ToggleSwitch x:Name="Linechange" Toggled="Linechange_Toggled" Margin="5 -5 0 -10" />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Uid="Changes" Name="changeslabel" Margin="20 38 0 0" Text="Maximum átszállás"  />
+                    <TextBox x:Name="Changes" Width="50" InputScope="Number" TextChanged="Changes_TextChanged" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Uid="Wait" Name="waitlabel" Margin="20 38 0 0" Text="Maximum várakozás"  />
+                    <TextBox x:Name="Wait" Width="50" InputScope="Number" TextChanged="Wait_TextChanged" />
+                    <TextBlock x:Uid="Minutes" Text="perc" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Uid="Walk" Name="walklabel" Margin="20 38 0 0" Text="Maximális séta"  />
+                    <TextBox x:Name="Walk" Width="50" InputScope="Number" TextChanged="Walk_TextChanged" />
+                    <TextBlock x:Uid="Distance" Text="km" />
+                </StackPanel>
+
+                <TextBlock Name="sortlabel" Text="Alapértelmezett rendezés" x:Uid="DefSort" />
+                <ComboBox x:Name="Sort" SelectionChanged="SortChanged">
+                    <ComboBoxItem x:Uid="SettingsSort1" />
+                    <ComboBoxItem x:Uid="SettingsSort2" />
+                    <ComboBoxItem x:Uid="SettingsSort3" />
+                    <ComboBoxItem x:Uid="SettingsSort4" />
+                </ComboBox>
+
+                <TextBlock Name="title3" x:Uid="BackgroundSettings" Text="Background activity" FontSize="25" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock Name="tileupdatetext" Text="Élő Csempék frissítési gyakorisága" x:Uid="TileUpdate" />
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="tileupdate" SelectionChanged="FrequencyChanged" Width="120">
+                        <ComboBoxItem Content="15" />
+                        <ComboBoxItem Content="30" />
+                        <ComboBoxItem Content="40" />
+                        <ComboBoxItem Content="60" />
+                        <ComboBoxItem Content="120" />
+                        <ComboBoxItem Content="300" />
+                        <ComboBoxItem x:Uid="Off" />
+                    </ComboBox>
+                    <TextBlock Name="mins2" x:Uid="Minutes" Text="perc" Margin="10 30 0 0" />
+                </StackPanel>
+                <TextBlock x:Uid="TileNote" Name="note6" Text="Missing explanation" Margin="5 5 0 5" FontSize="14" TextWrapping="Wrap" />
+
+                <TextBlock Name="title4" x:Uid="OtherSettings" Text="Other" FontSize="25" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock Name="themelabel" Text="Téma" x:Uid="Theme" />
+                <ComboBox x:Name="Theme" SelectionChanged="ThemeChanged">
+                    <ComboBoxItem x:Uid="Default" />
+                    <ComboBoxItem x:Uid="Dark" />
+                    <ComboBoxItem x:Uid="Light" />
+                </ComboBox>
+
+                <TextBlock x:Uid="Showlog" Name="Showloglabel" Text="Változások mutatása" />
+                <ToggleSwitch x:Name="Showlog" Toggled="Showlog_Toggled" />
+                
+                <TextBlock Name="version" HorizontalAlignment="Right" Text="v " Foreground="{ThemeResource PhoneAccentBrush}" Tapped="OpenChangelog" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

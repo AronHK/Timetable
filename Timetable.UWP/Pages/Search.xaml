@@ -1,0 +1,70 @@
+﻿<Page x:Name="page"
+    x:Class="Timetable.Search"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+    KeyUp="HandleKeyboardSettings">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="AutoSuggestBox">
+                <Setter Property="Margin" Value="0 5" />
+                <Setter Property="Width" Value="300" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Margin" Value="5 0 0 0" />
+                <Setter Property="Padding" Value="1 -5 0 0" />
+                <Setter Property="FontFamily" Value="Segoe UI Symbol" />
+                <Setter Property="FontSize" Value="25" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <RelativePanel>
+        <TextBlock Margin="10 15" Name="title" x:Uid="SearchTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="17.333" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" />
+
+        <ProgressRing RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="inprogress" IsActive="False" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" Height="60" Width="60" />
+
+        <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="panel" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 60">
+            <StackPanel Orientation="Horizontal">
+                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" TextChanged="InputChanged" SuggestionChosen="StopChosen" KeyUp="HandleKeyboardEnter" BorderBrush="#66FFFFFF" />
+                <Button Content="◉" Name="Getloc1" x:Uid="Getlocation" Foreground="#FFE4E4E4" Background="Transparent" ToolTipService.ToolTip="Helyszín lekérése" Click="RequestLocation" />
+                <ProgressRing Name="locprogress1" IsActive="True" Visibility="Collapsed" Margin="10 0 0 0" Background="{x:Null}" Foreground="White" Height="25" Width="25" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló"  TextChanged="InputChanged" SuggestionChosen="StopChosen" KeyUp="HandleKeyboardEnter" BorderBrush="#66FFFFFF" />
+                <Button Content="◉" Name="Getloc2" x:Uid="Getlocation" Foreground="#FFE4E4E4" Background="Transparent" ToolTipService.ToolTip="Helyszín lekérése" Click="RequestLocation" />
+                <ProgressRing Name="locprogress2" IsActive="True" Visibility="Collapsed" Margin="10 0 0 0" Background="{x:Null}" Foreground="White" Height="25" Width="25" />
+            </StackPanel>
+
+            <CalendarDatePicker Name="Date" Width="300" Margin="0 5" DateChanged="SyncCalendars" KeyUp="HandleKeyboardStart" />
+            <CalendarView Name="Date2" Width="300" Margin="0 5" Visibility="Collapsed" SelectedDatesChanged="SyncCalendars" KeyUp="HandleKeyboardStart" Background="{ThemeResource SystemControlBackgroundAccentBrush}" CalendarItemBackground="{ThemeResource SystemControlHighlightAltListAccentLowBrush}" OutOfScopeBackground="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" SelectedBorderBrush="{ThemeResource AppBarItemForegroundThemeBrush}" SelectedForeground="White" PressedForeground="{ThemeResource AppBarBackgroundThemeBrush}" />
+            <TimePicker Name="Time" Width="300" Margin="0 5" KeyUp="HandleKeyboardStart" />
+
+            <Button Visibility="Collapsed" Name="SearchButton" IsEnabled="False" Content="Search" x:Uid="Search" Width="150" Foreground="White" FontSize="15" HorizontalAlignment="Right" Padding="0" Margin="0 10 35 0" Click="StartSearch" Background="#37FFFFFF" />
+        </StackPanel>
+
+        <StackPanel Visibility="Collapsed" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignRightWithPanel="True" Height="32" Name="XboxPanel" Orientation="Horizontal" Padding="1">
+            <Image Name="MenuIcon" Source="{ThemeResource MenuIconW}" Height="30" />
+            <TextBlock Name="XboxMenu" x:Uid="HintSearch" Text="ERROR" Margin="5, 5, 20, 0" Foreground="White" />
+            <Image Source="{ThemeResource ViewIconW}" Height="30" />
+            <TextBlock x:Uid="HintSettings" Text="ERROR" Margin="5, 5, 0, 0" Foreground="White" />
+        </StackPanel>
+    </RelativePanel>
+
+    <Page.BottomAppBar>
+        <CommandBar Name="commandbar">
+            <AppBarButton Name="AppbarGo" IsEnabled="False" x:Uid="AppbarSearch" Label="Keresés" Icon="Send" Click="StartSearch" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Uid="AppbarSettings" Label="Beállítások" Icon="Setting" Click="GotoSettings" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

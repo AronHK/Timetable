@@ -1,0 +1,21 @@
+﻿<Application
+    x:Class="Timetable.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <BitmapImage x:Key="ChairIcon" UriSource="Assets/wchairB.png" />
+                    <BitmapImage x:Key="TicketIcon" UriSource="Assets/ticketB.png" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <BitmapImage x:Key="ChairIcon" UriSource="Assets/wchairW.png" />
+                    <BitmapImage x:Key="TicketIcon" UriSource="Assets/ticketW.png" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="Timetable.Results"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBox">
+                <Setter Property="Width" Value="230" />
+                <Setter Property="Margin" Value="0 5" />
+            </Style>
+            <Style TargetType="GridViewItem">
+                <Setter Property="Margin" Value="3 4" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Margin" Value="10 0 0 0" />
+                <Setter Property="Padding" Value="1 -5 0 0" />
+                <Setter Property="FontFamily" Value="Segoe UI Symbol" />
+                <Setter Property="FontSize" Value="25" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Rectangle Grid.Row="0" Name="titlebg" Fill="{ThemeResource PhoneAccentBrush}"  Margin="-10, -50, -10, 0" />
+        <TextBlock Grid.Row="0" Name="title" x:Uid="ResultTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="20" Margin="15 0" Foreground="White" />
+
+        <ProgressRing Grid.Row="1" Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource PhoneAccentBrush}" Height="60" Width="60" />
+        <GridView Grid.Row="1" Name="LineList" HorizontalAlignment="Center" Margin="10 1 10 0">
+        </GridView>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar Name="CmdBar">
+            <AppBarButton Name="AppbarSave" x:Uid="AppbarSave" Label="Mentés" Icon="Save" IsEnabled="False" Click="Save" />
+            <AppBarButton Name="AppbarPin" x:Uid="AppbarPin" Label="Mentés" Icon="Pin" Click="Pin" Visibility="Collapsed" />
+            <AppBarButton Name="AppbarUnPin" x:Uid="AppbarUnpin" Label="Mentés" Icon="UnPin" Click="UnPin" Visibility="Collapsed" />
+            <AppBarButton Name="AppbarUpdate" x:Uid="AppbarUpdate" Label="Frissítés" Icon="Sync" IsEnabled="False" Click="Update" />
+            <AppBarButton Name="AppbarSort" x:Uid="AppbarSort" Label="Rendezés" Icon="Sort" IsEnabled="False">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <ToggleMenuFlyoutItem x:Uid="AppbarSort1" Text="Indulási idő" Name="SortingOption1" IsChecked="True" Click="Sort" Tag="1" />
+                        <ToggleMenuFlyoutItem x:Uid="AppbarSort2" Text="Érkezési idő" Name="SortingOption2" Click="Sort" Tag="2" />
+                        <ToggleMenuFlyoutItem x:Uid="AppbarSort3" Text="Utazási idő" Name="SortingOption3" Click="Sort" Tag="3" />
+                        <ToggleMenuFlyoutItem x:Uid="AppbarSort4" Text="Távolság" Name="SortingOption4" Click="Sort" Tag="4" />
+                        <ToggleMenuFlyoutItem  />
+                        <ToggleMenuFlyoutItem  />
+                        <ToggleMenuFlyoutItem  />
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <!--<AppBarButton Label="Vissza irány" Icon="Shuffle" />-->
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Name="AppbarRename" x:Uid="AppbarRename" Label="Átnevezés" Icon="Rename" Click="Rename" Visibility="Collapsed" />
+                <AppBarButton Name="AppbarUnsave" x:Uid="AppbarUnsave" Label="Törlés" Icon="UnFavorite" Click="Unsave" IsEnabled="False" Visibility="Collapsed" />
+                <AppBarButton Label="Beállítások" x:Uid="AppbarSettings" Icon="Setting" Click="GotoSettings" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

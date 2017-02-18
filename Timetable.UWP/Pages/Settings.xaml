@@ -1,0 +1,112 @@
+﻿<Page
+    x:Class="Timetable.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Timetable"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ToggleSwitch">
+                <Setter Property="Margin" Value="0 30 0 0" />
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="5 38 0 0" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="0 30 0 0" />
+            </Style>
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="0 30 0 0" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <RelativePanel Name="mainpanel" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="10 0 0 0">
+        <Rectangle Height="100" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"  Name="titlebg" Fill="{ThemeResource SystemControlBackgroundAccentBrush}" Margin="-60, -50, -60, 0"  />
+        <TextBlock Margin="0 15" Name="title" x:Uid="SettingsTitle"  FontFamily="Segoe UI Black" FontSize="17.333" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" />
+
+        <ScrollViewer Name="scroller" RelativePanel.Below="titlebg" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" >
+            <RelativePanel HorizontalAlignment="Left" MaxWidth="800" Margin="0 0 0 30" >
+
+                <TextBlock Name="title1" x:Uid="Privacy" Text="Location + Network" FontSize="20" Margin="0 10 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock Name="locationlabel" RelativePanel.Below="title1" x:Uid="LocationAccess" Text="Hozzáférés helyadatokhoz" Width="230" />
+                <ToggleSwitch RelativePanel.Below="title1" RelativePanel.RightOf="locationlabel" x:Name="LocationEnabled" Toggled="LocationEnabled_Toggled" />
+                <TextBlock RelativePanel.AlignRightWith="LocationEnabled" RelativePanel.Below="locationlabel" x:Uid="LocationNote" Name="note1" Text="Helymeghatározás le van tiltva a rendszer által." FontSize="12" Visibility="Collapsed" Margin="5 20 5 0" />
+                <Button RelativePanel.AlignRightWith="LocationEnabled" RelativePanel.Below="note1" x:Uid="LocationLink" Name="note2" Content="Ugrás a beállításokhoz" Style="{ThemeResource TextBlockButtonStyle}" Click="GotoPrivacySettings" FontSize="12" Visibility="Collapsed" Margin="5 0 0 0"/>
+
+                <TextBlock Name="updatelabel" RelativePanel.Below="note2" x:Uid="AutoUpdate" Text="Frissítés korlátozott kapcsolatokon" />
+                <ToggleSwitch RelativePanel.Below="note2" RelativePanel.RightOf="locationlabel" x:Name="AlwaysUpdate" Toggled="AlwaysUpdate_Toggled" />
+
+                <TextBlock Name="title2" RelativePanel.Below="updatelabel" x:Uid="SearchSettings" Text="Search parameters" FontSize="20" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock RelativePanel.Below="title2" Name="exactlabel" Text="Pontos találatok" x:Uid="Exact" />
+                <ToggleSwitch RelativePanel.RightOf="locationlabel" RelativePanel.Below="title2" x:Name="Exactres" Toggled="Exactres_Toggled" />
+                <TextBlock RelativePanel.Below="exactlabel" x:Uid="ExactNote1" Name="note4" Text="A találatok között a megadott megállókhoz közel induló/érkező járatok is megjelenhetnek." Margin="10 15 10 0" FontSize="12" TextWrapping="Wrap" />
+                <TextBlock RelativePanel.Below="note4" x:Uid="ExactNote2" Name="note5" Text="A találatok mindig pontosan megfelelnek a megadott adatoknak, a közeli megállókból induló/érkező járatok figyelmen kívül lesznek hagyva." Margin="10 15 10 0" FontSize="12" TextWrapping="Wrap" Visibility="Collapsed" />
+
+                <TextBlock RelativePanel.Below="note5" Name="pricelabel" Text="Jegyár" x:Uid="Price" />
+                <ComboBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="note5" x:Name="Price" SelectionChanged="PriceChanged">
+                    <ComboBoxItem Content="100%" />
+                    <ComboBoxItem Content="-50%" />
+                    <ComboBoxItem Content="-90%" />
+                    <ComboBoxItem x:Uid="Free" />
+                </ComboBox>
+
+                <TextBlock RelativePanel.Below="pricelabel" x:Uid="Showchange" Name="linechangelabel" Text="Átszállások mutatása" />
+                <ToggleSwitch RelativePanel.RightOf="locationlabel" RelativePanel.Below="pricelabel" x:Name="Linechange" Toggled="Linechange_Toggled" />
+
+                <TextBlock RelativePanel.Below="linechangelabel" x:Uid="Changes" Name="changeslabel" Margin="20 38 0 0" Text="Maximum átszállás"  />
+                <TextBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="linechangelabel" x:Name="Changes" Width="50" InputScope="Number" TextChanged="Changes_TextChanged" />
+
+                <TextBlock RelativePanel.Below="changeslabel" x:Uid="Wait" Name="waitlabel" Margin="20 38 0 0" Text="Maximum várakozás"  />
+                <TextBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="changeslabel" x:Name="Wait" Width="50" InputScope="Number" TextChanged="Wait_TextChanged" />
+                <TextBlock RelativePanel.RightOf="Wait" RelativePanel.Below="changeslabel" Name="mins1" x:Uid="Minutes" Text="perc" />
+
+                <TextBlock RelativePanel.Below="waitlabel" x:Uid="Walk" Name="walklabel" Margin="20 38 0 0" Text="Maximális séta"  />
+                <TextBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="waitlabel" x:Name="Walk" Width="50" InputScope="Number" TextChanged="Walk_TextChanged" />
+                <TextBlock RelativePanel.RightOf="Walk" RelativePanel.Below="waitlabel" x:Uid="Distance" Text="km" />
+
+                <TextBlock RelativePanel.Below="walklabel" Name="sortlabel" Text="Alapértelmezett rendezés" x:Uid="DefSort" />
+                <ComboBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="walklabel" x:Name="Sort" SelectionChanged="SortChanged">
+                    <ComboBoxItem x:Uid="SettingsSort1" />
+                    <ComboBoxItem x:Uid="SettingsSort2" />
+                    <ComboBoxItem x:Uid="SettingsSort3" />
+                    <ComboBoxItem x:Uid="SettingsSort4" />
+                </ComboBox>
+
+                <TextBlock Name="title3" RelativePanel.Below="sortlabel" x:Uid="BackgroundSettings" Text="Background activity" FontSize="20" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock RelativePanel.Below="title3" Name="tileupdatetext" Text="Élő Csempék frissítési gyakorisága" x:Uid="TileUpdate" />
+                <ComboBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="title3" x:Name="tileupdate" SelectionChanged="FrequencyChanged">
+                    <ComboBoxItem Content="15" />
+                    <ComboBoxItem Content="30" />
+                    <ComboBoxItem Content="40" />
+                    <ComboBoxItem Content="60" />
+                    <ComboBoxItem Content="120" />
+                    <ComboBoxItem Content="300" />
+                    <ComboBoxItem x:Uid="Off" />
+                </ComboBox>
+                <TextBlock Name="mins2" RelativePanel.RightOf="tileupdate" RelativePanel.Below="title3" x:Uid="Minutes" Text="perc" />
+                <TextBlock RelativePanel.Below="tileupdatetext" x:Uid="TileNote" Name="note6" Text="Missing explanation" Margin="10 15 10 0" FontSize="12" TextWrapping="Wrap" />
+
+                <TextBlock Name="title4" RelativePanel.Below="note6" x:Uid="OtherSettings" Text="Other" FontSize="20" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+
+                <TextBlock RelativePanel.Below="title4" Name="themelabel" Text="Téma" x:Uid="Theme" />
+                <ComboBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="title4" x:Name="Theme" SelectionChanged="ThemeChanged">
+                    <ComboBoxItem x:Uid="Default" />
+                    <ComboBoxItem x:Uid="Dark" />
+                    <ComboBoxItem x:Uid="Light" />
+                </ComboBox>
+
+                <TextBlock RelativePanel.Below="themelabel" x:Uid="Showlog" Name="Showloglabel" Text="Változások mutatása" />
+                <ToggleSwitch RelativePanel.RightOf="locationlabel" RelativePanel.Below="themelabel" x:Name="Showlog" Toggled="Showlog_Toggled" />
+
+                <Button Name="version" RelativePanel.Below="Showlog" RelativePanel.AlignRightWithPanel="True" Content="v " Style="{ThemeResource TextBlockButtonStyle}" Margin="0 20 10 0" Click="OpenChangelog" />
+            </RelativePanel>
+        </ScrollViewer>
+    </RelativePanel>
+</Page>
