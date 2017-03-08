@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if BACKGROUND
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
@@ -91,64 +92,23 @@ namespace Timetable
             this.TolsID = TolsID;
             this.from = from;
             this.to = to;
-            lastUpdated = DateTime.Today;
-            buses = new List<IDictionary<string, string>>();
+            this.lastUpdated = DateTime.Today;
+            this.buses = new List<IDictionary<string, string>>();
+            this.error = false;
         }
 
-        /*public Line(LineData data)
+        public Line()
         {
-            Name = data.Name;
-            FromsID = data.FromsID;
-            TosID = data.TosID;
-            FromlsID = data.FromlsID;
-            TolsID = data.TolsID;
-            from = data.from;
-            to = data.to;
-            lastUpdated = data.lastUpdated;
-            Buses = data.Buses;
-            fromTile = false;
-        }*/
-
-        // unused // store fresh data about schedules on different days
-        /*public async Task update()
-        {
-            hiba = false;
-            int today = (int)DateTime.Today.DayOfWeek;
-            if (today >= 1 && today <= 5) // when today is weekday
-            {
-                Task a = updateOn(0, DateTime.Today.Date.ToString("yyyy-MM-dd")); //weekday
-                Task b = updateOn(1, DateTime.Today.AddDays(6 - today).Date.ToString("yyyy-MM-dd")); //saturday
-                Task c = updateOn(2, DateTime.Today.AddDays(7 - today).Date.ToString("yyyy-MM-dd")); //sunday
-                await Task.WhenAll(a, b, c);
-            }
-            else if (today == 6) // when today is saturday
-            {
-                Task a = updateOn(1, DateTime.Today.Date.ToString("yyyy-MM-dd"));
-                Task b = updateOn(0, DateTime.Today.AddDays(2).Date.ToString("yyyy-MM-dd"));
-                Task c = updateOn(2, DateTime.Today.AddDays(1).Date.ToString("yyyy-MM-dd"));
-                await Task.WhenAll(a, b, c);
-            }
-            else // when today is sunday
-            {
-                Task a = updateOn(2, DateTime.Today.Date.ToString("yyyy-MM-dd"));
-                Task b = updateOn(0, DateTime.Today.AddDays(1).Date.ToString("yyyy-MM-dd"));
-                Task c = updateOn(1, DateTime.Today.AddDays(6).Date.ToString("yyyy-MM-dd"));
-                await Task.WhenAll(a, b, c);
-            }
-        }*/
+            error = false;
+        }
 
         //get schedules for a specidic day
-        private async Task updateOn(int id, string date, bool allday, string hour, string minute)
+        private async Task DoUpdateOn(string date, string hour, string minute)
         {
             buses = new List<IDictionary<string, string>>();
-
-            string szak; // download specific or general data?
-            if (allday)
-                szak = "0";
-            else
-                szak = "3";
-
+            error = false;
             string responseString;
+
             using (var client = new HttpClient())               // query the server for the bus-line based on LineData
             {
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
@@ -179,7 +139,7 @@ namespace Timetable
                     { "maxvar", (String)roamingSettings.Values["wait"] },
                     { "maxwalk", (String)roamingSettings.Values["walk"] },
                     { "min", minute },
-                    { "napszak", szak },
+                    { "napszak", "0" }, //download whole day (3 specific hour)
                     { "naptipus", "0" },
                     { "odavissza", "0" },
                     { "preferencia", "1" },
@@ -226,23 +186,32 @@ namespace Timetable
                     jarat.Add("extra", getproperty(toParse, "additional_ticket_price", runcount));
                     string det = getdetails(toParse).Replace(Convert.ToChar(0x0).ToString(), "");
                     jarat.Add("details", det);
-                    Buses.Add(jarat); //Buses[id].Add(jarat)
+                    Buses.Add(jarat);
                 }
 
             }
         }
 
-        public IAsyncAction updateOn(string date)
+        public IAsyncAction updateOn()
         {
-            //await updateOn(0, date, true, DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString());
-            return this.updateOn(0, date, true, DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString()).AsAsyncAction();
+            return DoUpdateOn(DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString()).AsAsyncAction();
+        }
+
+        public IAsyncAction updateOn(DateTimeOffset date)
+        {
+            return DoUpdateOn(date.Date.ToString("yyyy-MM-dd"), DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString()).AsAsyncAction();
+        }
+
+        public IAsyncAction updateOn(DateTimeOffset date, TimeSpan time)
+        {
+            return DoUpdateOn(date.Date.ToString("yyyy-MM-dd"), time.Hours.ToString(), time.Minutes.ToString()).AsAsyncAction();
         }
 
         public IAsyncAction updateOn(string date, string hour, string minute)
         {
-            //await updateOn(0, date, false, hour, minute);
-            return this.updateOn(0, date, false, hour, minute).AsAsyncAction();
+            return DoUpdateOn(date, hour, minute).AsAsyncAction();
         }
+
 
         private string getproperty(string text, string key)
         {
@@ -374,3 +343,4 @@ namespace Timetable
         }
     }
 }
+#endif

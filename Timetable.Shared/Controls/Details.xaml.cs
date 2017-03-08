@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using Windows.UI.Popups;
 using System;
 using Windows.Storage;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace Timetable
 {

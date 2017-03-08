@@ -10,7 +10,7 @@
     d:DesignWidth="400"-->
     
     <RelativePanel Name="maingrid">
-        <Rectangle VerticalAlignment="Top" Height="50" Width="5000" Name="titlebg" Fill="{ThemeResource MenuFlyoutItemFocusedBackgroundThemeBrush}" Margin="-50 -10 -50 -10" />
+        <Rectangle VerticalAlignment="Top" Height="50" Width="5000" Name="titlebg" Fill="{ThemeResource MenuFlyoutItemFocusedBackgroundThemeBrush}" Margin="-50 -10 -50 0" />
         <TextBlock VerticalAlignment="Top" Margin="0 5" Text="TEST TITLE" Name="title" x:Uid="DetailsTitle" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="18" Foreground="{ThemeResource ApplicationHeaderForegroundThemeBrush}" FontWeight="SemiBold" />
 
         <ProgressRing RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0 200 0 0" Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" Height="60" Width="60" />

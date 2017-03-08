@@ -29,13 +29,13 @@
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Details.xaml.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)io.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Line.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\App.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Results.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Search.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Settings.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Line.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\LineSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />

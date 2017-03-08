@@ -20,6 +20,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System.Profile;
 using Windows.UI.Xaml.Media.Animation;
+using Timetable.Utilities;
 
 namespace Timetable
 {
@@ -29,7 +30,6 @@ namespace Timetable
     public sealed partial class Results : Page
     {
         private Line line;
-        IList<Line> savedLines;
         private Windows.Storage.ApplicationDataContainer roamingSettings;
         private string[] timedata;
         private ResourceLoader resourceLoader;
@@ -145,8 +145,7 @@ namespace Timetable
                 AppbarPin2.Visibility = Visibility.Collapsed;
             }
 #endif
-            savedLines = await lineSerializer.readLines();
-            if (savedLines.Contains(line))
+            if (await lineSerializer.LineExists(line))
             {
                 AppbarSave.IsEnabled = false;
 #if WINDOWS_UWP
@@ -167,12 +166,28 @@ namespace Timetable
 
             WindowResized(null, null);
 
+            if ((int)roamingSettings.Values["sort"] == 1)
+                SortingOption1.IsChecked = true;
+            if ((int)roamingSettings.Values["sort"] == 2)
+                SortingOption2.IsChecked = true;
+            if ((int)roamingSettings.Values["sort"] == 3)
+                SortingOption3.IsChecked = true;
+            if ((int)roamingSettings.Values["sort"] == 4)
+                SortingOption4.IsChecked = true;
             inprogress.IsActive = false;
             AppbarUpdate.IsEnabled = true;
             AppbarSave.IsEnabled = true;
             AppbarSort.IsEnabled = true;
             AppbarUnsave.IsEnabled = true;
 #if WINDOWS_UWP
+            if ((int)roamingSettings.Values["sort"] == 1)
+                SortingOption21.IsChecked = true;
+            if ((int)roamingSettings.Values["sort"] == 2)
+                SortingOption22.IsChecked = true;
+            if ((int)roamingSettings.Values["sort"] == 3)
+                SortingOption23.IsChecked = true;
+            if ((int)roamingSettings.Values["sort"] == 4)
+                SortingOption24.IsChecked = true;
             AppbarUpdate2.IsEnabled = true;
             AppbarSave2.IsEnabled = true;
             AppbarSort2.IsEnabled = true;
@@ -203,7 +218,7 @@ namespace Timetable
 
         private async void Save(object sender, RoutedEventArgs e)
         {
-            if (savedLines.Contains(line))   // is line unique?
+            if (await lineSerializer.LineExists(line))   // is line unique?
             {
                 var conflict = new MessageDialog(resourceLoader.GetString("SaveError"), resourceLoader.GetString("Error"));
                 conflict.Commands.Add(new UICommand("OK"));
@@ -293,6 +308,7 @@ namespace Timetable
         private void sortLines(int s)
         {
             List<Card> toDisplay = new List<Card>();
+            error.Visibility = Visibility.Collapsed;
 
             for (int i = 0; i < line.Buses.Count; i++)
             {
@@ -376,6 +392,9 @@ namespace Timetable
                 }
             }
 
+            if (LineList.Items.Count == 0)
+                error.Visibility = Visibility.Visible;
+
             WindowResized(null, null);
         }
 
@@ -424,7 +443,7 @@ namespace Timetable
 
         private async void CardClicked(object sender, TappedRoutedEventArgs e)
         {
-            StatusBar statusBar = StatusBar.GetForCurrentView();
+            StatusBar statusBar = null;
             ContentDialog popup = new ContentDialog();
 #if WINDOWS_PHONE_APP
             popup.Title = resourceLoader.GetString("DetailsTitleString");
@@ -433,12 +452,15 @@ namespace Timetable
             popup.PrimaryButtonText = resourceLoader.GetString("Closepanel");
             popup.IsPrimaryButtonEnabled = true;
 #if WINDOWS_UWP
+            
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 #endif
             {
+                statusBar = StatusBar.GetForCurrentView();
                 popup.FullSizeDesired = true;
-                /*titlebg.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemAltMediumHighColor"]);
-                Appbar2.Background = new SolidColorBrush((Color)Application.Current.Resources["SystemAltMediumHighColor"]);*/
+#if WINDOWS_UWP
+                titlebg.Fill = Resources["SystemAltHighColor"] as SolidColorBrush;
+#endif
                 if (Application.Current.RequestedTheme == ApplicationTheme.Light)
                     statusBar.ForegroundColor = Colors.Black;
             }
@@ -458,9 +480,10 @@ namespace Timetable
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 #endif
             {
-                /*titlebg.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"]);
-                Appbar2.Background = new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"]);*/
                 statusBar.ForegroundColor = Colors.White;
+#if WINDOWS_UWP
+                titlebg.Fill = Resources["SystemControlBackgroundAccentBrush"] as SolidColorBrush;
+#endif
             }
         }
 
@@ -609,7 +632,6 @@ namespace Timetable
                     {
                         dialog.Hide();
                         error = 0;
-                        await lineSerializer.removeLine(line);
                         line.Name = namebox.Text.Trim();
                         title.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #if WINDOWS_UWP
@@ -631,7 +653,6 @@ namespace Timetable
                 else
                 {
                     error = 0;
-                    await lineSerializer.removeLine(line);
                     line.Name = namebox.Text.Trim();
                     title.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #if WINDOWS_UWP
@@ -705,7 +726,7 @@ namespace Timetable
                 if (timedata != null)
                     await line.updateOn(timedata[0], timedata[1], timedata[2]);
                 else
-                    await line.updateOn(DateTime.Today.Date.ToString("yyyy-MM-dd"));
+                    await line.updateOn(DateTime.Today);
             }
             catch (HttpRequestException)
             {
@@ -768,23 +789,7 @@ namespace Timetable
 
             await App.trigger.RequestAsync(); // run tile updater
 #elif WINDOWS_PHONE_APP
-            XmlDocument tileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWide310x150Text01);
-            XmlNodeList tileTextAttributes = tileXml.GetElementsByTagName("text");
-            tileTextAttributes[0].AppendChild(tileXml.CreateTextNode(current.LineNumber));
-            tileTextAttributes[1].AppendChild(tileXml.CreateTextNode(" "));
-            tileTextAttributes[2].AppendChild(tileXml.CreateTextNode(current.StartTime + " " + current.From));
-            tileTextAttributes[3].AppendChild(tileXml.CreateTextNode(current.EndTime + " " + current.To));
-
-            XmlDocument tileXml2 = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
-            XmlNodeList tileTextAttributes2 = tileXml2.GetElementsByTagName("text");
-            tileTextAttributes2[0].AppendChild(tileXml2.CreateTextNode(current.LineNumber));
-            tileTextAttributes2[1].AppendChild(tileXml2.CreateTextNode(" "));
-            tileTextAttributes2[2].AppendChild(tileXml2.CreateTextNode(current.StartTime + " " + current.From));
-            tileTextAttributes2[3].AppendChild(tileXml2.CreateTextNode(current.EndTime + " " + current.To));
-
-            IXmlNode node = tileXml.ImportNode(tileXml2.GetElementsByTagName("binding").Item(0), true);
-            tileXml.GetElementsByTagName("visual").Item(0).AppendChild(node);
-
+            XmlDocument tileXml = Utilities.TileData.getXML("", current.LineNumber, current.StartTime, current.From, current.EndTime, current.To, false);
             TileNotification notif = new TileNotification(tileXml);
             TileUpdateManager.CreateTileUpdaterForSecondaryTile(tileID).Update(notif);
 #endif

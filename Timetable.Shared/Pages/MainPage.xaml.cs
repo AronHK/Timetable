@@ -14,7 +14,6 @@ using Windows.UI.StartScreen;
 using Windows.UI;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml.Media.Animation;
-
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Geolocation;
@@ -33,12 +32,12 @@ namespace Timetable
         private IList<Line> savedLines;
         private IReadOnlyList<SecondaryTile> tiles;
         private ResourceLoader resourceLoader;
-        private LineSerializer lineSerializer;
+        private Utilities.LineSerializer lineSerializer;
 
         private async Task getSavedData(bool update, int toupdate = -1)
         {
             // LOAD SAVED DATA
-            lineSerializer = new LineSerializer(ResourceLoader.GetForViewIndependentUse());
+            lineSerializer = new Utilities.LineSerializer(ResourceLoader.GetForViewIndependentUse());
             savedLines = await lineSerializer.readLines();
             //LineList.ItemsSource = null;
             LineList.Items.Clear();
@@ -105,8 +104,9 @@ namespace Timetable
                             savedLines[i].Buses = null;
                             try
                             {
-                                await savedLines[i].updateOn(updateday.ToString("yyyy-MM-dd"));
+                                await savedLines[i].updateOn(updateday);
                                 savedLines[i].LastUpdated = updateday;
+                                await lineSerializer.saveLine(savedLines[i]);
                             }
                             catch (HttpRequestException)
                             {
@@ -189,8 +189,6 @@ namespace Timetable
                 inprogresstext.Visibility = Visibility.Collapsed;
                 //LineList.ItemsSource = toAdd;
 
-                await lineSerializer.writeLines(savedLines);
-
                 inprogress.IsActive = false;
                 inprogressbg.Visibility = Visibility.Collapsed;
                 inprogresstext.Visibility = Visibility.Collapsed;
@@ -270,7 +268,6 @@ namespace Timetable
                     {
                         dialog.Hide();
                         error = 0;
-                        await lineSerializer.removeLine(sender.ParentLine);
                         sender.ParentLine.Name = namebox.Text.Trim();
                         await lineSerializer.saveLine(sender.ParentLine);
                         await getSavedData(false);
@@ -288,7 +285,6 @@ namespace Timetable
                 else
                 {
                     error = 0;
-                    await lineSerializer.removeLine(sender.ParentLine);
                     sender.ParentLine.Name = namebox.Text.Trim();
                     await lineSerializer.saveLine(sender.ParentLine);
                     await getSavedData(false);
@@ -362,26 +358,9 @@ namespace Timetable
                 await tile.RequestCreateAsync();
 
 #if WINDOWS_PHONE_APP
-                XmlDocument tileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWide310x150Text01);
-                XmlNodeList tileTextAttributes = tileXml.GetElementsByTagName("text");
-                tileTextAttributes[0].AppendChild(tileXml.CreateTextNode(card.LineNumber));
-                tileTextAttributes[1].AppendChild(tileXml.CreateTextNode(" "));
-                tileTextAttributes[2].AppendChild(tileXml.CreateTextNode(card.StartTime + " " + card.From));
-                tileTextAttributes[3].AppendChild(tileXml.CreateTextNode(card.EndTime + " " + card.To));
-
-                XmlDocument tileXml2 = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
-                XmlNodeList tileTextAttributes2 = tileXml2.GetElementsByTagName("text");
-                tileTextAttributes2[0].AppendChild(tileXml2.CreateTextNode(card.LineNumber));
-                tileTextAttributes2[1].AppendChild(tileXml2.CreateTextNode(" "));
-                tileTextAttributes2[2].AppendChild(tileXml2.CreateTextNode(card.StartTime + " " + card.From));
-                tileTextAttributes2[3].AppendChild(tileXml2.CreateTextNode(card.EndTime + " " + card.To));
-
-                IXmlNode node = tileXml.ImportNode(tileXml2.GetElementsByTagName("binding").Item(0), true);
-                tileXml.GetElementsByTagName("visual").Item(0).AppendChild(node);
-
+                XmlDocument tileXml = Utilities.TileData.getXML("", card.LineNumber, card.StartTime, card.From, card.EndTime, card.To, false);
                 TileNotification notif = new TileNotification(tileXml);
                 TileUpdateManager.CreateTileUpdaterForSecondaryTile(tileID).Update(notif);
-
 #elif WINDOWS_UWP
                 await App.trigger.RequestAsync(); // run tile updater
 #endif

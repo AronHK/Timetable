@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
-using Windows.Data.Xml.Dom;
-using Windows.Devices.Geolocation;
 using Windows.System;
 using Windows.UI;
-using Windows.UI.Notifications;
 using Windows.UI.Popups;
-using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
@@ -36,7 +28,7 @@ namespace Timetable
                 var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ForegroundColor = Colors.Black;
             }
-            
+
             //Window.Current.SizeChanged += WindowResized;
             ApplicationView.GetForCurrentView().VisibleBoundsChanged += WindowResized;
         }
@@ -72,11 +64,8 @@ namespace Timetable
             
             if (localSettings.Values["location"] == null)
             {
-                Geolocator geolocator = new Geolocator();
-                Geoposition pos = null;
-                bool error = false;
-                try { pos = await geolocator.GetGeopositionAsync(); } catch (Exception) { error = true; }
-                if (error)
+                bool isallowed = await Utilities.LocationFinder.IsLocationAllowed();
+                if (!isallowed)
                 {
                     var dialog = new MessageDialog(resourceLoader.GetString("InitialLocationError"));
                     dialog.Commands.Add(new UICommand("OK", (command) =>
@@ -85,7 +74,7 @@ namespace Timetable
                     }));
                     dialog.Commands.Add(new UICommand(resourceLoader.GetString("Settings"), async (command) =>
                     {
-                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
+                        await Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
                     }));
                     dialog.CancelCommandIndex = 0;
                     dialog.DefaultCommandIndex = 1;

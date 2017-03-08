@@ -6,6 +6,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
+using Windows.Graphics.Display;
 using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
@@ -61,40 +62,50 @@ namespace Timetable
                 roamingSettings.Values["sort"] = 1;
             if (roamingSettings.Values["showlog"] == null)
                 roamingSettings.Values["showlog"] = true;
+            if (roamingSettings.Values["usagelog"] == null)
+                roamingSettings.Values["usagelog"] = "0|0";
             if (localSettings.Values["frequency"] == null)
                 localSettings.Values["frequency"] = (uint)60;
             if (localSettings.Values["frequency"] is String)
                 localSettings.Values["frequency"] = (uint)60;
+            if (localSettings.Values["history1"] == null)
+                localSettings.Values["history1"] = "";
+            if (localSettings.Values["history2"] == null)
+                localSettings.Values["history2"] = "";
+            if (localSettings.Values["history3"] == null)
+                localSettings.Values["history3"] = "";
+            if (localSettings.Values["history4"] == null)
+                localSettings.Values["history4"] = "";
 
             if ((int)localSettings.Values["theme"] == 1)
                 RequestedTheme = ApplicationTheme.Dark;
             if ((int)localSettings.Values["theme"] == 2)
                 RequestedTheme = ApplicationTheme.Light;
 
-            InitializeBackgroundTasks((uint)localSettings.Values["frequency"]);
+            InitializeBackgroundTasks((uint)localSettings.Values["frequency"], (string)localSettings.Values["version"]);
         }
 
-        private static async void InitializeBackgroundTasks(uint frequency)
+        private static async void InitializeBackgroundTasks(uint frequency, string version)
         {
+            //BackgroundExecutionManager.RemoveAccess();
             bool exists = false, exists2 = false;
             foreach (var task in BackgroundTaskRegistration.AllTasks)
             {
-                if ((task.Value.Name != "ScheduledSecondaryTileUpdater" || exists2) && (task.Value.Name != "ScheduledTileUpdater" || exists))
+                if (version != VERSION)
                     task.Value.Unregister(true);
-                if (task.Value.Name == "ScheduledTileUpdater")
-                    exists = true;
-                if (task.Value.Name == "ScheduledSecondaryTileUpdater")
-                    exists2 = true;
+                else
+                {
+                    if ((task.Value.Name != "ScheduledSecondaryTileUpdater" || exists2) && (task.Value.Name != "ScheduledTileUpdater" || exists))
+                        task.Value.Unregister(true);
+                    if (task.Value.Name == "ScheduledTileUpdater")
+                        exists = true;
+                    if (task.Value.Name == "ScheduledSecondaryTileUpdater")
+                        exists2 = true;
+                }
             }
 
             if (frequency != 0 && !exists) // automatically recurring activation of primary tile updater
             {
-                BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
-                builder2.Name = "ScheduledTileUpdater";
-                builder2.TaskEntryPoint = "Timetable.TileUpdater";
-                TimeTrigger trigger = new TimeTrigger(frequency, false);
-                builder2.SetTrigger(trigger);
-
                 var access = await BackgroundExecutionManager.RequestAccessAsync();
 
 #if WINDOWS_UWP
@@ -102,31 +113,39 @@ namespace Timetable
 #elif WINDOWS_PHONE_APP
                 if (access != BackgroundAccessStatus.Denied)
 #endif
+                {
+                    BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
+                    builder2.Name = "ScheduledTileUpdater";
+                    builder2.TaskEntryPoint = typeof(TileUpdater).FullName;
+                    TimeTrigger trigger = new TimeTrigger(frequency, false);
+                    builder2.SetTrigger(trigger);
                     builder2.Register();
+                }
             }
 
             if (frequency != 0 && !exists2) // automatically recurring activation of secondary tile updater
             {
-                BackgroundTaskBuilder builder4 = new BackgroundTaskBuilder();
-                builder4.Name = "ScheduledSecondaryTileUpdater";
-                builder4.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
-                TimeTrigger trigger = new TimeTrigger(frequency, false);
-                builder4.SetTrigger(trigger);
-
                 var access = await BackgroundExecutionManager.RequestAccessAsync();
 #if WINDOWS_UWP
                 if (access != BackgroundAccessStatus.DeniedBySystemPolicy && access != BackgroundAccessStatus.DeniedByUser)
 #elif WINDOWS_PHONE_APP
                 if (access != BackgroundAccessStatus.Denied)
 #endif
+                {
+                    BackgroundTaskBuilder builder4 = new BackgroundTaskBuilder();
+                    builder4.Name = "ScheduledSecondaryTileUpdater";
+                    builder4.TaskEntryPoint = typeof(SecondaryTileUpdater).FullName;
+                    TimeTrigger trigger = new TimeTrigger(frequency, false);
+                    builder4.SetTrigger(trigger);
                     builder4.Register();
+                }
             }
 
 #if WINDOWS_UWP
             // for manual activation of secondary tile update
             BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
             builder.Name = "RunSecondaryTileUpdater";
-            builder.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
+            builder.TaskEntryPoint = typeof(SecondaryTileUpdater).FullName;
             trigger = new ApplicationTrigger();
             builder.SetTrigger(trigger);
             try { builder.Register(); } catch (Exception) { }
@@ -199,29 +218,27 @@ namespace Timetable
                 rootFrame.SizeChanged += RootFrame_SizeChanged;
             }
 
-            LineSerializer lineSerializer = new LineSerializer(Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse());
+            var lineSerializer = new Utilities.LineSerializer(Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse());
 #if WINDOWS_UWP
             if (e.PrelaunchActivated == false)
 #endif
             {
                 string[] tileData = e.TileId.Split('-'); // handle secondary tile
+                string[] tileData2 = e.Arguments.Split('|');
                 if (tileData[0] == "MenetrendApp")
                 {
-                    IList<Line> lines = await lineSerializer.readLines();
-                    Line dummy = new Line(tileData[1], tileData[3], tileData[2], tileData[4], "asd", "asd");
-                    for (int i = 0; i < lines.Count; i++)
+                    Line line = await lineSerializer.openLine(tileData[1], tileData[2], tileData[3], tileData[4], tileData2[0], tileData2[1]);
+                    if (!line.Error)
                     {
-                        if (lines[i].Equals(dummy))
-                        {
-                            rootFrame.Navigate(typeof(Results), lines[i]);
-                            rootFrame.BackStack.Clear();
-                            rootFrame.BackStack.Add(new PageStackEntry(typeof(MainPage), null, null));
+                        rootFrame.Navigate(typeof(Results), line);
+                        rootFrame.BackStack.Clear();
+                        rootFrame.BackStack.Add(new PageStackEntry(typeof(MainPage), null, null));
 #if WINDOWS_UWP
-                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 #endif
-                            break;
-                        }
                     }
+                    else
+                        rootFrame.Navigate(typeof(MainPage));
                 }
                 else if (rootFrame.Content == null)
                 {
@@ -239,18 +256,14 @@ namespace Timetable
                     rootFrame.ContentTransitions = null;
                     rootFrame.Navigated += this.RootFrame_FirstNavigated;
 
+                    //from notification
                     string arguments = e.Arguments;
                     string[] lineData = arguments.Split('-');
                     if (lineData.Length == 4)
                     {
-                        var savedLines = await lineSerializer.readLines();
-                        foreach (Line line in savedLines)
-                        {
-                            if (lineData[0] == line.FromsID && lineData[1] == line.FromlsID && lineData[2] == line.TosID && lineData[3] == line.TolsID)
-                            {
-                                rootFrame.Navigate(typeof(Results), line);
-                            }
-                        }
+                        Line line = await lineSerializer.openLine(tileData[0], tileData[1], tileData[2], tileData[3]);
+                        if (!line.Error)
+                            rootFrame.Navigate(typeof(Results), line);
                     }
 #endif
                     // When the navigation stack isn't restored navigate to the first page,

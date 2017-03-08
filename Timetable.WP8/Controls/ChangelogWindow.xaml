@@ -24,23 +24,32 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
-        <TextBlock Name="title" x:Uid="ChangelogTitle" Text="What's new" FontSize="25" />
-        <TextBlock Name="desc" x:Uid="ChangelogDesc" Margin="0 5 0 20" FontSize="18" Text="Description" />
-        <ScrollViewer Name="scroller" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
-            <StackPanel Name="panel">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <TextBlock Grid.Row="0"  Name="title" x:Uid="ChangelogTitle" Text="What's new" FontSize="25" />
+        <TextBlock Grid.Row="1" Name="desc" x:Uid="ChangelogDesc" Margin="0 5 0 20" FontSize="18" Text="Description" />
+
+        <ScrollViewer Grid.Row="2" Name="scroller">
+            <StackPanel>
+
                 <Rectangle />
                 <TextBlock Margin="10 -33 0 0" Text="v 0.8.2" />
                 <TextBlock x:Uid="Changelog084" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
-                
+
                 <Rectangle />
                 <TextBlock Margin="10 -33 0 0" Text="v 0.8.1.4" />
                 <TextBlock x:Uid="Changelog083" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
-                
+
                 <Rectangle />
                 <TextBlock Margin="10 -33 0 0" Text="v 0.8.1.1" />
                 <TextBlock x:Uid="Changelog082" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
-                
+
                 <Rectangle />
                 <TextBlock Margin="10 -33 0 0" Text="v 0.8.1" />
                 <TextBlock x:Uid="Changelog081" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
@@ -48,7 +57,9 @@
                 <Rectangle />
                 <TextBlock x:Uid="ChangelogInitialTitle" Margin="10 -33 0 0" Text="Initial" />
                 <TextBlock x:Uid="ChangelogInitialWP8" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+
             </StackPanel>
         </ScrollViewer>
-    </StackPanel>
+
+    </Grid>
 </UserControl>

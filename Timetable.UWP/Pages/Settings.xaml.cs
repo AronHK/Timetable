@@ -23,19 +23,18 @@ namespace Timetable
     {
         private async void LocationEnabled_Toggled(object sender, RoutedEventArgs e)
         {
-            var accessStatus = await Geolocator.RequestAccessAsync();
-            if (accessStatus != GeolocationAccessStatus.Allowed)
+            if (await Utilities.LocationFinder.IsLocationAllowed())
+            {
+                localSettings.Values["location"] = LocationEnabled.IsOn;
+                note1.Visibility = Visibility.Collapsed;
+                note2.Visibility = Visibility.Collapsed;
+            }
+            else
             {
                 localSettings.Values["location"] = false;
                 LocationEnabled.IsOn = false;
                 note1.Visibility = Visibility.Visible;
                 note2.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                localSettings.Values["location"] = LocationEnabled.IsOn;
-                note1.Visibility = Visibility.Collapsed;
-                note2.Visibility = Visibility.Collapsed;
             }
         }
         

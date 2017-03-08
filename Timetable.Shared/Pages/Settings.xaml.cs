@@ -125,6 +125,7 @@ namespace Timetable
             {
                 mins1.Text = resourceLoader.GetString("Mins");
                 mins2.Text = resourceLoader.GetString("Mins");
+                Showloglabel.Text = resourceLoader.GetString("ShowlogShort");
             }
             if (width > 400)
                 changeslabel.Text = resourceLoader.GetString("ChangesLong");
@@ -207,32 +208,20 @@ namespace Timetable
                 catch (FormatException) { frequency = 0; }
                 localSettings.Values["frequency"] = frequency;
 
+                foreach (var task in BackgroundTaskRegistration.AllTasks)
+                {
+                    if (task.Value.Name == "ScheduledTileUpdater")
+                        task.Value.Unregister(true);
+                    if (task.Value.Name == "ScheduledSecondaryTileUpdater")
+                        task.Value.Unregister(true);
+                }
+
                 if (frequency != 0)
                 {
                     mins2.Visibility = Visibility.Visible;
 #if WINDOWS_UWP
                     await App.trigger.RequestAsync();
 #endif
-                    foreach (var task in BackgroundTaskRegistration.AllTasks)
-                    {
-                        if (task.Value.Name == "ScheduledTileUpdater")
-                            task.Value.Unregister(true);
-                        if (task.Value.Name == "ScheduledSecondaryTileUpdater")
-                            task.Value.Unregister(true);
-                    }
-
-                    BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
-                    builder.Name = "ScheduledTileUpdater";
-                    builder.TaskEntryPoint = "Timetable.TileUpdater";
-                    TimeTrigger timetrigger = new TimeTrigger(frequency, false);
-                    builder.SetTrigger(timetrigger);
-
-                    BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
-                    builder2.Name = "ScheduledSecondaryTileUpdater";
-                    builder2.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
-                    TimeTrigger timetrigger2 = new TimeTrigger(frequency, false);
-                    builder2.SetTrigger(timetrigger2);
-
                     var access = await BackgroundExecutionManager.RequestAccessAsync();
 #if WINDOWS_PHONE_APP
                     if (access != BackgroundAccessStatus.Denied)
@@ -240,7 +229,26 @@ namespace Timetable
                     if (access != BackgroundAccessStatus.DeniedBySystemPolicy && access != BackgroundAccessStatus.DeniedByUser)
 #endif
                     {
+                        BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
+                        builder.Name = "ScheduledTileUpdater";
+                        builder.TaskEntryPoint = "Timetable.TileUpdater";
+                        TimeTrigger timetrigger = new TimeTrigger(frequency, false);
+                        builder.SetTrigger(timetrigger);
                         builder.Register();
+                    }
+
+                    var access2 = await BackgroundExecutionManager.RequestAccessAsync();
+#if WINDOWS_PHONE_APP
+                    if (access2 != BackgroundAccessStatus.Denied)
+#elif WINDOWS_UWP
+                    if (access2 != BackgroundAccessStatus.DeniedBySystemPolicy && access2 != BackgroundAccessStatus.DeniedByUser)
+#endif
+                    {
+                        BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
+                        builder2.Name = "ScheduledSecondaryTileUpdater";
+                        builder2.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
+                        TimeTrigger timetrigger2 = new TimeTrigger(frequency, false);
+                        builder2.SetTrigger(timetrigger2);
                         builder2.Register();
                     }
                     await System.Threading.Tasks.Task.Delay(2000);
@@ -263,7 +271,10 @@ namespace Timetable
 #endif
             {
                 popup.FullSizeDesired = true;
-                //titlebg.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemAltMediumHighColor"]);
+
+#if WINDOWS_UWP
+                titlebg.Fill = Resources["SystemAltHighColor"] as SolidColorBrush;
+#endif
                 if (Application.Current.RequestedTheme == ApplicationTheme.Light)
                 {
                     var statusBar = StatusBar.GetForCurrentView();
@@ -286,9 +297,11 @@ namespace Timetable
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 #endif
             {
-                //titlebg.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"]);
                 var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ForegroundColor = Colors.White;
+#if WINDOWS_UWP
+                titlebg.Fill = Resources["SystemControlBackgroundAccentBrush"] as SolidColorBrush;
+#endif
             }
         }
 

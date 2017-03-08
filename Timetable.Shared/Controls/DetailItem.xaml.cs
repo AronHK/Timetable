@@ -94,7 +94,11 @@ namespace Timetable
 
             if (bus.Type == 3) // walk
             {
+#if WINDOWS_UWP
                 rect.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemBaseHighColor"]);
+#elif WINDOWS_PHONE_APP
+                rect.Fill = new SolidColorBrush((Color)Application.Current.Resources["PhoneForegroundColor"]);
+#endif
                 /*if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
                     rect.Fill = new SolidColorBrush(Colors.White);
                 else

@@ -1,24 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.ViewManagement;
-using System.Net.Http;
 using Windows.UI.Popups;
-using System.Threading.Tasks;
-using Windows.UI.StartScreen;
 using Windows.UI;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Hosting;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Navigation;
-using Windows.Devices.Geolocation;
 using Windows.System.Profile;
-using Windows.Networking.Connectivity;
+using Microsoft.Services.Store.Engagement;
 
 namespace Timetable
 {
@@ -30,6 +24,7 @@ namespace Timetable
         public MainPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
             resourceLoader = ResourceLoader.GetForCurrentView();
 
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar") && Application.Current.RequestedTheme == ApplicationTheme.Light)
@@ -76,36 +71,64 @@ namespace Timetable
 
             Loaded += async (s, ev) =>
             {
+                var logger = StoreServicesCustomEventLogger.GetDefault();
+                string[] temp = ((string)roamingSettings.Values["usagelog"]).Split('|');
+                int usage, lastday;
+                int.TryParse(temp[1], out usage);
+                int.TryParse(temp[0], out lastday);
+
+                if (lastday != DateTime.Today.Day)
+                {
+                    usage++;
+                    roamingSettings.Values["usagelog"] = DateTime.Today.Day + "|" + usage;
+                    switch (usage)
+                    {
+                        case 20:
+                            logger.Log("engagement 20"); // ~1 month once per day
+                            break;
+                        case 60:
+                            logger.Log("engagement 60"); // ~3 months
+                            break;
+                        case 100:
+                            logger.Log("engagement 100"); // ~5 months
+                            break;
+                        case 140:
+                            logger.Log("engagement 140"); // ~7 months
+                            break;
+                        case 240:
+                            logger.Log("engagement 240"); // ~1 year
+                            break;
+                    }
+                }
+
                 if (localSettings.Values["version"] == null)
                     localSettings.Values["version"] = App.VERSION;
-                if ((string)localSettings.Values["version"] != App.VERSION && (bool)roamingSettings.Values["showlog"])
+                if ((string)localSettings.Values["version"] != App.VERSION)
                 {
-                    localSettings.Values["version"] = App.VERSION;
-                    var popup = new ContentDialog();
-                    popup.Content = new ChangelogWindow(Window.Current.Bounds.Width, Window.Current.Bounds.Height);
-                    popup.PrimaryButtonText = resourceLoader.GetString("Closebutton");
-                    popup.IsPrimaryButtonEnabled = true;
+                    logger.Log(App.VERSION);
 
-                    if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-                        popup.FullSizeDesired = true;
-                    else
+                    if ((bool)roamingSettings.Values["showlog"])
                     {
-                        popup.MinHeight = ActualHeight * 0.7;
-                        popup.MaxHeight = ActualHeight * 0.7;
-                        popup.MinWidth = 440;
-                        popup.MaxWidth = 440;
-                    }
+                        localSettings.Values["version"] = App.VERSION;
+                        var popup = new ContentDialog();
+                        popup.Content = new ChangelogWindow(Window.Current.Bounds.Width, Window.Current.Bounds.Height);
+                        popup.PrimaryButtonText = resourceLoader.GetString("Closebutton");
+                        popup.IsPrimaryButtonEnabled = true;
 
-                    await popup.ShowAsync();
+                        if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                            popup.FullSizeDesired = true;
+                        else
+                        {
+                            popup.MinHeight = ActualHeight * 0.7;
+                            popup.MaxHeight = ActualHeight * 0.7;
+                            popup.MinWidth = 440;
+                            popup.MaxWidth = 440;
+                        }
+
+                        await popup.ShowAsync();
+                    }
                 }
             };
-
-            if (localSettings.Values["cleanstorage"] != null && (bool)localSettings.Values["cleanstorage"] == true)
-            {
-                localSettings.Values["cleanstorage"] = false;
-                Windows.Storage.StorageFile datafile = await Windows.Storage.ApplicationData.Current.RoamingFolder.GetFileAsync("linedata");
-                await datafile.DeleteAsync();
-            }
 
             if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
                 AppbarFeedback.Visibility = Visibility.Visible;
@@ -115,11 +138,10 @@ namespace Timetable
                 var dialog = new MessageDialog(resourceLoader.GetString("InitialLocation"));
                 dialog.Commands.Add(new UICommand(resourceLoader.GetString("Yes"), async (command) =>
                 {
-                    var accessStatus = await Geolocator.RequestAccessAsync();
-                    if (accessStatus != GeolocationAccessStatus.Allowed)
-                        localSettings.Values["location"] = false;
-                    else
+                    if (await Utilities.LocationFinder.IsLocationAllowed())
                         localSettings.Values["location"] = true;
+                    else
+                        localSettings.Values["location"] = false;
                 }));
                 dialog.Commands.Add(new UICommand(resourceLoader.GetString("No"), (command) =>
                 {
@@ -129,6 +151,7 @@ namespace Timetable
                 dialog.DefaultCommandIndex = 0;
                 await dialog.ShowAsync();
             }
+
             await getSavedData(false);
         }
 

@@ -33,18 +33,18 @@
 
         <ProgressRing Grid.Row="1" Margin="0 -90 0 0" Name="inprogress" IsActive="False" Background="{x:Null}" Foreground="White" Height="60" Width="60" />
 
-        <StackPanel Name="panel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 10 150">
-            <StackPanel Orientation="Horizontal" Width="380">
-                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="340" />
+        <StackPanel Name="panel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 150">
+            <StackPanel Orientation="Horizontal" Width="370">
+                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="330" />
                 <Button Name="Getloc1" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -10 0 0" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Width="380">
-                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló"  TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="340" />
+            <StackPanel Orientation="Horizontal" Width="370">
+                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="330" />
                 <Button Name="Getloc2" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -12 0 0" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 40 0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 45 0">
                 <DatePicker Name="Date" Margin="0 5" Foreground="White" DateChanged="DateChanged" />
                 <TimePicker Name="Time" Margin="0 5" Foreground="White" />
             </StackPanel>

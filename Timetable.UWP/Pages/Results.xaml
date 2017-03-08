@@ -41,7 +41,7 @@
             <AppBarButton Name="AppbarSort2" Foreground="White" x:Uid="AppbarSort" Label="Rendezés" Icon="Sort" IsEnabled="False">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <ToggleMenuFlyoutItem x:Uid="AppbarSort1" Text="Indulási idő" Name="SortingOption21" IsChecked="True" Tapped="Sort" Tag="1" />
+                        <ToggleMenuFlyoutItem x:Uid="AppbarSort1" Text="Indulási idő" Name="SortingOption21" Tapped="Sort" Tag="1" />
                         <ToggleMenuFlyoutItem x:Uid="AppbarSort2" Text="Érkezési idő" Name="SortingOption22" Tapped="Sort" Tag="2" />
                         <ToggleMenuFlyoutItem x:Uid="AppbarSort3" Text="Utazási idő" Name="SortingOption23" Tapped="Sort" Tag="3" />
                         <ToggleMenuFlyoutItem x:Uid="AppbarSort4" Text="Távolság" Name="SortingOption24" Tapped="Sort" Tag="4" />
@@ -62,6 +62,7 @@
         <ProgressRing Name="inprogress" Margin="0 100 0 0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" Height="60" Width="60" />
         <GridView Name="LineList" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="titlebg" Margin="0 1 0 0" Padding="10 0" IsItemClickEnabled="True" ItemClick="LinelistItemclick">
         </GridView>
+        <TextBlock Name="error" x:Uid="ResultsError" Visibility="Collapsed" RelativePanel.AlignHorizontalCenterWithPanel="True" TextWrapping="Wrap" TextAlignment="Center" Margin="20 150 20 0" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
 
         <StackPanel Visibility="Collapsed" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True" Height="42" Name="XboxPanel" Orientation="Horizontal" Padding="0 10 0 0">
             <Image Name="XIcon" Source="{ThemeResource XIcon}" Height="30" />
@@ -85,7 +86,7 @@
             <AppBarButton Name="AppbarSort" x:Uid="AppbarSort" Label="Rendezés" Icon="Sort" IsEnabled="False">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <ToggleMenuFlyoutItem x:Uid="AppbarSort1" Text="Indulási idő" Name="SortingOption1" IsChecked="True" Click="Sort" Tag="1" />
+                        <ToggleMenuFlyoutItem x:Uid="AppbarSort1" Text="Indulási idő" Name="SortingOption1" Click="Sort" Tag="1" />
                         <ToggleMenuFlyoutItem x:Uid="AppbarSort2" Text="Érkezési idő" Name="SortingOption2" Click="Sort" Tag="2" />
                         <ToggleMenuFlyoutItem x:Uid="AppbarSort3" Text="Utazási idő" Name="SortingOption3" Click="Sort" Tag="3" />
                         <ToggleMenuFlyoutItem x:Uid="AppbarSort4" Text="Távolság" Name="SortingOption4" Click="Sort" Tag="4" />

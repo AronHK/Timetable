@@ -40,6 +40,7 @@
         <ProgressRing Grid.Row="1" Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource PhoneAccentBrush}" Height="60" Width="60" />
         <GridView Grid.Row="1" Name="LineList" HorizontalAlignment="Center" Margin="10 1 10 0">
         </GridView>
+        <TextBlock Grid.Row="1" Name="error" x:Uid="ResultsError" Visibility="Collapsed" TextWrapping="Wrap" TextAlignment="Center" FontSize="19" Margin="20 100 20 0" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
     </Grid>
 
     <Page.BottomAppBar>

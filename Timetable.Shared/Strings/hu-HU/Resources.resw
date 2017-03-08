@@ -516,7 +516,7 @@ szeretnéd frissíteni.</value>
     <value>Fájlhozzáférési hiba!</value>
   </data>
   <data name="FileerrorRestore" xml:space="preserve">
-    <value>Hiba történt a járatok mentése közben! A sérült járatok el lettek távolítva. Az okozott kellemetlenségért elnézést kérünk.</value>
+    <value>Megváltozott a járatok tárolási módja és hiba történt a régi fájl olvasása közben. Elnézést a kellemetlenségért.</value>
   </data>
   <data name="FileerrorTry" xml:space="preserve">
     <value>Próbálkozz újra!</value>
@@ -529,11 +529,11 @@ szeretnéd frissíteni.</value>
     <value>A név nem lehet hosszabb 30 karakternél!</value>
   </data>
   <data name="Changelog150.Text" xml:space="preserve">
-    <value>● Xbox/kontroller támogatás
-● Értékelés nélkül is küldhető visszajelzés az appról
+    <value>● Windows 8 és 10-es verziók egyesítve
 ● UI javítások
 ● Változtatható alapértelmezett rendezés
-● Mentett járatok megbízhatóbb tárolása</value>
+● Előzmények
+● Javított tárolási módszer mentett járatokhoz</value>
   </data>
   <data name="Showlog.Text" xml:space="preserve">
     <value>Változások mutatása frissítés után</value>
@@ -567,9 +567,11 @@ szeretnéd frissíteni.</value>
   </data>
   <data name="Changelog084.Text" xml:space="preserve">
     <value>● Windows 8 és 10-es verziók egyesítve
-● Mentett járatok megbízhatóbb tárolása
-● Automatikus frissítések letilthatók mobilinterneten
+● UI javítások
 ● Változtatható alapértelmezett rendezés
+● Előzmények
+● Javított tárolási módszer mentett járatokhoz
+● Automatikus frissítések letilthatók mobilinterneten
 ● Témaválasztási lehetőség</value>
   </data>
   <data name="InitialLocationError" xml:space="preserve">
@@ -586,5 +588,11 @@ szeretnéd frissíteni.</value>
   </data>
   <data name="SettingsSort4.Content" xml:space="preserve">
     <value>Távolság</value>
+  </data>
+  <data name="ResultsError.Text" xml:space="preserve">
+    <value>Néhány találat nem jelenik meg az alkalmazás beállítások miatt.</value>
+  </data>
+  <data name="ShowlogShort" xml:space="preserve">
+    <value>Változások frissítés után</value>
   </data>
 </root>

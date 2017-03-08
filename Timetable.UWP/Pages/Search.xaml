@@ -33,13 +33,13 @@
 
         <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="panel" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 60">
             <StackPanel Orientation="Horizontal">
-                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" TextChanged="InputChanged" SuggestionChosen="StopChosen" KeyUp="HandleKeyboardEnter" BorderBrush="#66FFFFFF" />
+                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" KeyUp="HandleKeyboardEnter" BorderBrush="#66FFFFFF" />
                 <Button Content="◉" Name="Getloc1" x:Uid="Getlocation" Foreground="#FFE4E4E4" Background="Transparent" ToolTipService.ToolTip="Helyszín lekérése" Click="RequestLocation" />
                 <ProgressRing Name="locprogress1" IsActive="True" Visibility="Collapsed" Margin="10 0 0 0" Background="{x:Null}" Foreground="White" Height="25" Width="25" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló"  TextChanged="InputChanged" SuggestionChosen="StopChosen" KeyUp="HandleKeyboardEnter" BorderBrush="#66FFFFFF" />
+                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" KeyUp="HandleKeyboardEnter" BorderBrush="#66FFFFFF" />
                 <Button Content="◉" Name="Getloc2" x:Uid="Getlocation" Foreground="#FFE4E4E4" Background="Transparent" ToolTipService.ToolTip="Helyszín lekérése" Click="RequestLocation" />
                 <ProgressRing Name="locprogress2" IsActive="True" Visibility="Collapsed" Margin="10 0 0 0" Background="{x:Null}" Foreground="White" Height="25" Width="25" />
             </StackPanel>

@@ -43,7 +43,7 @@ namespace Timetable
                 var toastArgs = args as ToastNotificationActivatedEventArgs;
                 var arguments = toastArgs.Argument;
                 string[] lineData = arguments.Split('-');
-                LineSerializer lineSerializer = new LineSerializer(Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse());
+                Utilities.LineSerializer lineSerializer = new Utilities.LineSerializer(Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse());
                 var savedLines = await lineSerializer.readLines();
                 foreach (Line line in savedLines)
                 {

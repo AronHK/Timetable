@@ -6,9 +6,10 @@ namespace Timetable
 {
     public sealed partial class ChangelogWindow : UserControl
     {
-        public ChangelogWindow(double width, double height) //params only for compatibility reasons
+        public ChangelogWindow(double width, double height)
         {
             this.InitializeComponent();
+            scroller.Height = height - 220;
         }
     }
 }

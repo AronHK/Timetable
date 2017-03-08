@@ -2,14 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Runtime.Serialization;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.Data.Xml.Dom;
-using Windows.Devices.Geolocation;
 using Windows.Networking.Connectivity;
-using Windows.Services.Maps;
 using Windows.Storage;
 using Windows.UI.Notifications;
 
@@ -27,17 +23,14 @@ namespace Timetable
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
             resourceLoader = ResourceLoader.GetForViewIndependentUse();
-            LineSerializer lineSerializer = new LineSerializer(resourceLoader);
-            IList<Line> savedLines = await lineSerializer.readLines();
-
-
+            
             //main tile
             Windows.UI.Notifications.TileUpdater mainmngr = TileUpdateManager.CreateTileUpdaterForApplication();
 
             string town = null;
 
             if ((bool?)localSettings.Values["location"] != false)
-                town = await GetLocation();
+                town = await Utilities.LocationFinder.GetLocation();
            
             foreach (var tile in mainmngr.GetScheduledTileNotifications())
                 mainmngr.RemoveFromSchedule(tile);
@@ -47,28 +40,23 @@ namespace Timetable
 
             if (town != null)
             {
-                List<Line> linesfromhere = new List<Line>();
-                List<int> indices = new List<int>();
+                Utilities.LineSerializer lineSerializer = new Utilities.LineSerializer(resourceLoader);
+                IList<Line> linesfromhere = await lineSerializer.readLinesFrom(town);
+                List<int> busindices = new List<int>();
 
-                foreach (var line in savedLines)
+                // update lines
+                foreach (var line in linesfromhere)
                 {
-                    if (line.From.Split(',')[0] == town) // if we are in this town
+                    if (((bool)roamingSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date)
                     {
-                        if (((bool)roamingSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date) // update if necessary
-                        {
-                            try { await line.updateOn(DateTime.Today.Date.ToString("yyyy-MM-dd")); }
-                            catch (System.Net.Http.HttpRequestException) { return; }
-                            line.LastUpdated = DateTime.Today.Date;
+                        try { await line.updateOn(DateTime.Today); }
+                        catch (System.Net.Http.HttpRequestException) { return; }
+                        line.LastUpdated = DateTime.Today.Date;
 
-                            await lineSerializer.writeLines(savedLines);
-                        }
-
-                        if (line.Buses.Count > 0)
-                        {
-                            linesfromhere.Add(line);
-                            indices.Add(0);
-                        }
+                        await lineSerializer.saveLine(line);
                     }
+
+                    busindices.Add(0);
                 }
 
                 bool done = false;
@@ -76,14 +64,20 @@ namespace Timetable
                 string prevfromtime = "";
                 bool first = true;
 
-                while (!done) // go through all possible lines
+                // go through all possible lines
+                while (!done)
                 {
                     DateTime mintime = DateTime.Today.AddDays(1);
                     minind = -1;
 
                     for (int j = 0; j < linesfromhere.Count; j++) // find next time
                     {
-                        int i = indices[j];
+                        if (linesfromhere[j].Buses.Count < 1 && j < linesfromhere.Count - 1)
+                            j++;
+                        else if (linesfromhere[j].Buses.Count < 1 && j == linesfromhere.Count - 1)
+                            break;
+
+                        int i = busindices[j];
                         if (i != -1)
                         {
                             string fromtime, num, from, to;
@@ -100,17 +94,17 @@ namespace Timetable
                                     minind = j;
                                     mintime = DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture);
                                 }
-                                else if (linesfromhere[j].Buses.Count - 1 > indices[j])
-                                    indices[j]++;
+                                else if (linesfromhere[j].Buses.Count - 1 > busindices[j])
+                                    busindices[j]++;
                                 else
-                                    indices[j] = -1;
+                                    busindices[j] = -1;
                             }
                         }
                     }
 
                     if (minind != -1)
                     {
-                        int i = indices[minind];
+                        int i = busindices[minind];
                         string fromtime, num, from, to, name, totime;
                         name = linesfromhere[minind].Name;
                         linesfromhere[minind].Buses[i].TryGetValue("erkezesi_ido", out totime);
@@ -136,23 +130,23 @@ namespace Timetable
                         mainmngr.AddToSchedule(scheduledUpdate);
 
                         prevfromtime = fromtime;
-                        if (indices[minind] != -1 && linesfromhere[minind].Buses.Count - 1 > indices[minind])
-                            indices[minind]++;
+                        if (busindices[minind] != -1 && linesfromhere[minind].Buses.Count - 1 > busindices[minind])
+                            busindices[minind]++;
                         else
-                            indices[minind] = -1;
+                            busindices[minind] = -1;
                     }
                     else
                     {
-                        for (int i = 0; i < indices.Count; i++)
-                            indices[i]++;
+                        for (int i = 0; i < busindices.Count; i++)
+                            busindices[i]++;
                     }
 
                     done = true;
-                    for (int i = 0; i < indices.Count; i++)
+                    for (int i = 0; i < busindices.Count; i++)
                     {
-                        if (indices[i] == linesfromhere[i].Buses.Count - 1)
-                            indices[i] = -1;
-                        if (indices[i] != -1)
+                        if (busindices[i] == linesfromhere[i].Buses.Count - 1)
+                            busindices[i] = -1;
+                        if (busindices[i] != -1)
                             done = false;
                     }
                 }

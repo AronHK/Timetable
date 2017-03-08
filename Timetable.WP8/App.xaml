@@ -16,6 +16,9 @@
                     <BitmapImage x:Key="TicketIcon" UriSource="Assets/ticketW.png" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <Style TargetType="TextBox">
+                <Setter Property="FontSize" Value="19" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

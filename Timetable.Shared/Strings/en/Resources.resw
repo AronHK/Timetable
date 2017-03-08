@@ -169,7 +169,7 @@
     <value>Unknown stops</value>
   </data>
   <data name="CardError.Text" xml:space="preserve">
-    <value>No such Buses can be found today
+    <value>No such buses can be found today
 or tomorrow...</value>
   </data>
   <data name="CardTime" xml:space="preserve">
@@ -515,7 +515,7 @@ only update this line.</value>
     <value>Error Accessing File!</value>
   </data>
   <data name="FileerrorRestore" xml:space="preserve">
-    <value>An arror has occured while saving your lines. The damaged lines have been removed. Sorry for the inconvenience.</value>
+    <value>The way the app stores saved lines has changed, and there was an error reading the old file. Sorry for the inconvenience.</value>
   </data>
   <data name="FileerrorTry" xml:space="preserve">
     <value>Try again!</value>
@@ -528,11 +528,11 @@ only update this line.</value>
     <value>The name cannot be longer than 30 characters!</value>
   </data>
   <data name="Changelog150.Text" xml:space="preserve">
-    <value>● Xbox/controller support
-● You can now send feedback without reviewing the app
+    <value>● Windows 8 and 10 versions merged
 ● UI improvements
 ● Changeable default sorting
-● Saved lines are less likely to disappear</value>
+● Search history
+● Improved storage method for saved lines</value>
   </data>
   <data name="Showlog.Text" xml:space="preserve">
     <value>Show changelog after updates</value>
@@ -566,9 +566,11 @@ only update this line.</value>
   </data>
   <data name="Changelog084.Text" xml:space="preserve">
     <value>● Windows 8 and 10 versions merged
-● Saved lines are less likely to disappear
-● Automatic updates can now be disabled on cellular connections
+● UI improvements
 ● Changeable default sorting
+● Search history
+● Improved storage method for saved lines
+● Automatic updates can now be disabled on cellular connections
 ● Option to change theme</value>
   </data>
   <data name="InitialLocationError" xml:space="preserve">
@@ -585,5 +587,11 @@ only update this line.</value>
   </data>
   <data name="SettingsSort4.Content" xml:space="preserve">
     <value>Distance</value>
+  </data>
+  <data name="ResultsError.Text" xml:space="preserve">
+    <value>Some results are not displayed because of your application settings.</value>
+  </data>
+  <data name="ShowlogShort" xml:space="preserve">
+    <value>Changelog after updates</value>
   </data>
 </root>

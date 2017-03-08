@@ -1,11 +1,11 @@
 ﻿using Windows.Data.Xml.Dom;
 using Windows.ApplicationModel.Resources;
 
-namespace Timetable
+namespace Timetable.Utilities
 {
     static class TileData
     {
-        public static XmlDocument getXML(string name, string num, string fromtime, string from, string totime, string to, bool showtomorrow)
+        public static XmlDocument getXML(string name, string num, string fromtime, string from, string totime, string to, bool showtomorrow = false)
         {
             ResourceLoader resourceLoader = ResourceLoader.GetForViewIndependentUse();
 

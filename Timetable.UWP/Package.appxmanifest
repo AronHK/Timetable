@@ -32,13 +32,13 @@
         </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.SecondaryTileUpdater">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.TileUpdater">
           <BackgroundTasks>
             <Task Type="general" />
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.TileUpdater">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.SecondaryTileUpdater">
           <BackgroundTasks>
             <Task Type="general" />
             <Task Type="timer" />

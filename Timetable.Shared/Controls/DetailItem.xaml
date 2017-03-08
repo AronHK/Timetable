@@ -20,7 +20,7 @@
         <Rectangle Name="rect" Canvas.Left="77.5" Canvas.Top="10" Height="50" Width="5" />
         <Ellipse Name="def2" Canvas.Left="70" Height="20" Width="20" />
         <TextBlock Name="dist" Canvas.Left="20" Canvas.Top="30" Text="{Binding Distance, ElementName=userControl}" FontSize="12"  Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
-        <TextBlock Canvas.Left="100" Canvas.Top="0" Text="{Binding From, ElementName=userControl}"  Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
+        <TextBlock Canvas.Left="100" Canvas.Top="0" Text="{Binding From, ElementName=userControl}" FontSize="15" Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
         <TextBlock Canvas.Top="-7" Text="{Binding StartTime, ElementName=userControl}" FontSize="23" FontWeight="Bold" Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
     </Canvas>
 </UserControl>
