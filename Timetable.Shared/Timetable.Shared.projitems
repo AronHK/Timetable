@@ -19,7 +19,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Background\Common.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Background\SecondaryTileUpdater.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Background\TileUpdater.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Card.xaml.cs">

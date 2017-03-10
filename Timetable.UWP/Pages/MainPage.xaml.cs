@@ -26,6 +26,24 @@ namespace Timetable
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
             resourceLoader = ResourceLoader.GetForCurrentView();
+            
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
+            {
+                Appbar.Visibility = Visibility.Collapsed;
+                XboxPanel.Visibility = Visibility.Visible;
+                mainpanel.Margin = new Thickness(48, 27, 48, 27);
+                LineList.Margin = new Thickness(0, 5, 0, 42);
+            }
+
+            //Window.Current.SizeChanged += WindowResized;
+            ApplicationView.GetForCurrentView().VisibleBoundsChanged += WindowResized;
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
 
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar") && Application.Current.RequestedTheme == ApplicationTheme.Light)
             {
@@ -50,24 +68,6 @@ namespace Timetable
                     titleBar.ButtonForegroundColor = Colors.Black;
                 }
             }
-
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
-            {
-                Appbar.Visibility = Visibility.Collapsed;
-                XboxPanel.Visibility = Visibility.Visible;
-                mainpanel.Margin = new Thickness(48, 27, 48, 27);
-                LineList.Margin = new Thickness(0, 5, 0, 42);
-            }
-
-            //Window.Current.SizeChanged += WindowResized;
-            ApplicationView.GetForCurrentView().VisibleBoundsChanged += WindowResized;
-        }
-
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
 
             Loaded += async (s, ev) =>
             {
