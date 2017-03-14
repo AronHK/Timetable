@@ -595,4 +595,14 @@ szeretnéd frissíteni.</value>
   <data name="ShowlogShort" xml:space="preserve">
     <value>Változások frissítés után</value>
   </data>
+  <data name="Changelog152.Text" xml:space="preserve">
+    <value>● Ugrólista (PC)
+● Egyéb időpontokra való keresések találatai helyesen jelennek meg</value>
+  </data>
+  <data name="SearchText" xml:space="preserve">
+    <value>Járat keresése</value>
+  </data>
+  <data name="SavedLines" xml:space="preserve">
+    <value>Mentett járatok</value>
+  </data>
 </root>

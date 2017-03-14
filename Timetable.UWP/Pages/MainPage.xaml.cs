@@ -13,6 +13,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Navigation;
 using Windows.System.Profile;
 using Microsoft.Services.Store.Engagement;
+using Windows.UI.StartScreen;
 
 namespace Timetable
 {
@@ -153,6 +154,24 @@ namespace Timetable
             }
 
             await getSavedData(false);
+
+            var jumpList = await Windows.UI.StartScreen.JumpList.LoadCurrentAsync();
+            jumpList.Items.Clear();
+
+            var item = JumpListItem.CreateWithArguments("opensearch", resourceLoader.GetString("SearchText"));
+            item.Logo = new Uri("ms-appx:///Assets/searchicon.png");
+            jumpList.Items.Add(item);
+
+            foreach (Line line in savedLines)
+            {
+                var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", line.Name);
+                item2.Logo = new Uri("ms-appx:///Assets/BadgeLogo.scale-100.png");
+                item2.Description = $"{line.From} - {line.To}";
+                item2.GroupName = resourceLoader.GetString("SavedLines");
+                jumpList.Items.Add(item2);
+            }
+
+            await jumpList.SaveAsync();
         }
 
         //private void WindowResized(object sender, WindowSizeChangedEventArgs e)

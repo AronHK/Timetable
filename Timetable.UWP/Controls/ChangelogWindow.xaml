@@ -28,6 +28,11 @@
         <TextBlock Name="desc" x:Uid="ChangelogDesc" RelativePanel.Below="title" Margin="0 5 0 20" FontSize="11" Text="Description" />
         <ScrollViewer Name="scroller" RelativePanel.Below="desc" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible" IsTabStop="True">
             <StackPanel Name="panel">
+                
+                <Rectangle />
+                <TextBlock Margin="10 -26 0 0" Text="v 1.5.2" />
+                <TextBlock x:Uid="Changelog152" Margin="20 0 0 20" FontSize="13" Text="Missing resource" />
+                
                 <Rectangle />
                 <TextBlock Margin="10 -26 0 0" Text="v 1.5.0" />
                 <TextBlock x:Uid="Changelog150" Margin="20 0 0 20" FontSize="13" Text="Missing resource" />

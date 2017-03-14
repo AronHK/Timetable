@@ -223,24 +223,56 @@ namespace Timetable
             if (e.PrelaunchActivated == false)
 #endif
             {
-                string[] tileData = e.TileId.Split('-'); // handle secondary tile
-                string[] tileData2 = e.Arguments.Split('|');
-                if (tileData[0] == "MenetrendApp")
+                if (e.Arguments == "opensearch")
                 {
-                    Line line = await lineSerializer.openLine(tileData[1], tileData[2], tileData[3], tileData[4], tileData2[0], tileData2[1]);
-                    if (!line.Error)
-                    {
-                        rootFrame.Navigate(typeof(Results), line);
-                        rootFrame.BackStack.Clear();
-                        rootFrame.BackStack.Add(new PageStackEntry(typeof(MainPage), null, null));
+                    rootFrame.Navigate(typeof(Search));
+                    rootFrame.BackStack.Clear();
+                    rootFrame.BackStack.Add(new PageStackEntry(typeof(MainPage), null, null));
 #if WINDOWS_UWP
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 #endif
+                }
+                else
+                {
+                    string[] tileData = e.TileId.Split('-'); // handle secondary tile
+                    string[] tileData2 = e.Arguments.Split('|');
+                    if (tileData[0] == "MenetrendApp")
+                    {
+                        Line line = await lineSerializer.openLine(tileData[1], tileData[2], tileData[3], tileData[4], tileData2[0], tileData2[1]);
+                        if (!line.Error)
+                        {
+                            rootFrame.Navigate(typeof(Results), line);
+                            rootFrame.BackStack.Clear();
+                            rootFrame.BackStack.Add(new PageStackEntry(typeof(MainPage), null, null));
+#if WINDOWS_UWP
+                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+#endif
+                        }
+                        else
+                            rootFrame.Navigate(typeof(MainPage));
                     }
                     else
-                        rootFrame.Navigate(typeof(MainPage));
+                    {
+                        string[] lineData = e.Arguments.Split('-'); //uwp jumplist, wp8 notification
+                        if (lineData.Length == 4)
+                        {
+                            Line line = await lineSerializer.openLine(lineData[0], lineData[1], lineData[2], lineData[3]);
+                            if (!line.Error)
+                            {
+                                rootFrame.Navigate(typeof(Results), line);
+                                rootFrame.BackStack.Clear();
+                                rootFrame.BackStack.Add(new PageStackEntry(typeof(MainPage), null, null));
+#if WINDOWS_UWP
+                                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+#endif
+                            }
+                            else
+                                rootFrame.Navigate(typeof(MainPage));
+                        }
+                    }
                 }
-                else if (rootFrame.Content == null)
+
+                if (rootFrame.Content == null)
                 {
 #if WINDOWS_PHONE_APP
                     // Removes the turnstile navigation for startup.
@@ -254,17 +286,7 @@ namespace Timetable
                     }
 
                     rootFrame.ContentTransitions = null;
-                    rootFrame.Navigated += this.RootFrame_FirstNavigated;
-
-                    //from notification
-                    string arguments = e.Arguments;
-                    string[] lineData = arguments.Split('-');
-                    if (lineData.Length == 4)
-                    {
-                        Line line = await lineSerializer.openLine(tileData[0], tileData[1], tileData[2], tileData[3]);
-                        if (!line.Error)
-                            rootFrame.Navigate(typeof(Results), line);
-                    }
+                    rootFrame.Navigated += this.RootFrame_FirstNavigated;       
 #endif
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation

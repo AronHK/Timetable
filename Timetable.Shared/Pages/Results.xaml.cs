@@ -345,6 +345,11 @@ namespace Timetable
                 }
             }
 
+            DateTime jumpto;
+            if (timedata != null)
+                jumpto = DateTime.Parse($"{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day} {timedata[1]}:{timedata[2]}");
+            else
+                jumpto = DateTime.Now;
             int pos = -1;
             int linenum = toDisplay.Count;
             for (int i = 0; i < linenum; i++)
@@ -352,7 +357,7 @@ namespace Timetable
                 if (s == 1)                             // DEFAULT SORTING
                 {
                     LineList.Items.Add(toDisplay[i]);
-                    if (DateTime.ParseExact(toDisplay[i].StartTime, "HH:mm", CultureInfo.InvariantCulture) <= DateTime.Now) // times before now, show the next one
+                    if (DateTime.ParseExact(toDisplay[i].StartTime, "HH:mm", CultureInfo.InvariantCulture) <= jumpto) // times before now, show the next one
                         pos = i;
                 }
                 else
@@ -370,12 +375,12 @@ namespace Timetable
                             min = toDisplay[j];
                     }
                     LineList.Items.Add(min);
-                    if (DateTime.ParseExact(min.StartTime, "HH:mm", CultureInfo.InvariantCulture) <= DateTime.Now)
+                    if (DateTime.ParseExact(min.StartTime, "HH:mm", CultureInfo.InvariantCulture) <= jumpto)
                         pos = i;
                     toDisplay.Remove(min);
                 }
             }
-
+            
             if (line.LastUpdated <= DateTime.Now)
             {
                 if ((s == 1 || s == 2) && LineList.Items.Count > 0)

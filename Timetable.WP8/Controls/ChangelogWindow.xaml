@@ -39,6 +39,10 @@
             <StackPanel>
 
                 <Rectangle />
+                <TextBlock Margin="10 -33 0 0" Text="v 0.8.2.2" />
+                <TextBlock x:Uid="Changelog152" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+                
+                <Rectangle />
                 <TextBlock Margin="10 -33 0 0" Text="v 0.8.2" />
                 <TextBlock x:Uid="Changelog084" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
 

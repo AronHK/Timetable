@@ -594,4 +594,14 @@ only update this line.</value>
   <data name="ShowlogShort" xml:space="preserve">
     <value>Changelog after updates</value>
   </data>
+  <data name="Changelog152.Text" xml:space="preserve">
+    <value>● Jumplist (Desktop)
+● Results for searches with custom times now display correctly</value>
+  </data>
+  <data name="SearchText" xml:space="preserve">
+    <value>Find a line</value>
+  </data>
+  <data name="SavedLines" xml:space="preserve">
+    <value>Saved Lines</value>
+  </data>
 </root>
