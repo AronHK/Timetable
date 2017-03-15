@@ -195,6 +195,9 @@ namespace Timetable
                 AppbarUpdate.IsEnabled = true;
             }
 
+#if WINDOWS_UWP
+            UpdateJumplist();
+#endif
             WindowResized(null, null);
         }
 

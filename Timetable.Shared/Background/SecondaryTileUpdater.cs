@@ -74,7 +74,11 @@ namespace Timetable
                                     {
                                         //found = true;
                                         string name, totime;
+#if WINDOWS_UWP
                                         name = line.Name;
+#elif WINDOWS_PHONE_APP
+                                        name = "";
+#endif
                                         line.Buses[i].TryGetValue("erkezesi_ido", out totime);
 
                                         XmlDocument xmlDoc = getXML(name, num, fromtime, from, totime, to, false);
@@ -108,7 +112,11 @@ namespace Timetable
                                     do
                                     {
                                         string fromtime, name, totime;
+#if WINDOWS_UWP
                                         name = line.Name;
+#elif WINDOWS_PHONE_APP
+                                        name = "";
+#endif
                                         line.Buses[i].TryGetValue("erkezesi_ido", out totime);
                                         line.Buses[i].TryGetValue("indulasi_ido", out fromtime);
                                         line.Buses[i].TryGetValue("vonalnev", out num);
@@ -127,7 +135,7 @@ namespace Timetable
                                         }
 
                                         i++;
-                                    } while ((!(bool)roamingSettings.Values["canchange"] && num == " ∙∙∙") || ((bool)roamingSettings.Values["exact"] && ((line.From != from && line.From.Contains(",")) || (line.To != to && line.To.Contains(",")))));
+                                    } while (i < line.Buses.Count && ((!(bool)roamingSettings.Values["canchange"] && num == " ∙∙∙") || ((bool)roamingSettings.Values["exact"] && ((line.From != from && line.From.Contains(",")) || (line.To != to && line.To.Contains(","))))));
                                 }
                             }
                         }

@@ -604,4 +604,7 @@ only update this line.</value>
   <data name="SavedLines" xml:space="preserve">
     <value>Saved Lines</value>
   </data>
+  <data name="Unnamed" xml:space="preserve">
+    <value>&lt;Unnamed Line&gt;</value>
+  </data>
 </root>

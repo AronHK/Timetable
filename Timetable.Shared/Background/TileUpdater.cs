@@ -78,7 +78,7 @@ namespace Timetable
                             break;
 
                         int i = busindices[j];
-                        if (i != -1)
+                        if (i != -1 && i < linesfromhere[j].Buses.Count)
                         {
                             string fromtime, num, from, to;
                             linesfromhere[j].Buses[i].TryGetValue("vonalnev", out num);

@@ -29,9 +29,9 @@ namespace Timetable.Utilities
             XmlDocument tileXml2 = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
             XmlNodeList tileTextAttributes2 = tileXml2.GetElementsByTagName("text");
             tileTextAttributes2[0].AppendChild(tileXml2.CreateTextNode(num + " " + name));
-            tileTextAttributes2[baseindex].AppendChild(tileXml2.CreateTextNode(tomorrow));
-            tileTextAttributes2[baseindex + 1].AppendChild(tileXml2.CreateTextNode(fromtime + " " + from));
-            tileTextAttributes2[baseindex + 2].AppendChild(tileXml2.CreateTextNode(totime + " " + to));
+            tileTextAttributes2[1].AppendChild(tileXml2.CreateTextNode(tomorrow));
+            tileTextAttributes2[2].AppendChild(tileXml2.CreateTextNode(fromtime + " " + from));
+            tileTextAttributes2[3].AppendChild(tileXml2.CreateTextNode(totime + " " + to));
 
             IXmlNode node = tileXml.ImportNode(tileXml2.GetElementsByTagName("binding").Item(0), true);
             tileXml.GetElementsByTagName("visual").Item(0).AppendChild(node);

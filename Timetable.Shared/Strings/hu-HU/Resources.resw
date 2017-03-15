@@ -605,4 +605,7 @@ szeretnéd frissíteni.</value>
   <data name="SavedLines" xml:space="preserve">
     <value>Mentett járatok</value>
   </data>
+  <data name="Unnamed" xml:space="preserve">
+    <value>&lt;Névtelen járat&gt;</value>
+  </data>
 </root>

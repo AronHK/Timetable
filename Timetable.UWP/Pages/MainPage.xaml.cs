@@ -154,24 +154,6 @@ namespace Timetable
             }
 
             await getSavedData(false);
-
-            var jumpList = await Windows.UI.StartScreen.JumpList.LoadCurrentAsync();
-            jumpList.Items.Clear();
-
-            var item = JumpListItem.CreateWithArguments("opensearch", resourceLoader.GetString("SearchText"));
-            item.Logo = new Uri("ms-appx:///Assets/searchicon.png");
-            jumpList.Items.Add(item);
-
-            foreach (Line line in savedLines)
-            {
-                var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", line.Name);
-                item2.Logo = new Uri("ms-appx:///Assets/BadgeLogo.scale-100.png");
-                item2.Description = $"{line.From} - {line.To}";
-                item2.GroupName = resourceLoader.GetString("SavedLines");
-                jumpList.Items.Add(item2);
-            }
-
-            await jumpList.SaveAsync();
         }
 
         //private void WindowResized(object sender, WindowSizeChangedEventArgs e)
@@ -216,6 +198,30 @@ namespace Timetable
         {
             Frame.Navigate(typeof(Settings), null, new SuppressNavigationTransitionInfo());
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+        }
+
+        private async void UpdateJumplist()
+        {
+            var jumpList = await Windows.UI.StartScreen.JumpList.LoadCurrentAsync();
+            jumpList.Items.Clear();
+
+            var item = JumpListItem.CreateWithArguments("opensearch", resourceLoader.GetString("SearchText"));
+            item.Logo = new Uri("ms-appx:///Assets/searchicon.png");
+            jumpList.Items.Add(item);
+
+            foreach (Line line in savedLines)
+            {
+                string name = line.Name;
+                if (name.Trim() == "")
+                    name = resourceLoader.GetString("Unnamed");
+                var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", line.Name);
+                item2.Logo = new Uri("ms-appx:///Assets/BadgeLogo.scale-100.png");
+                item2.Description = $"{line.From} - {line.To}";
+                item2.GroupName = resourceLoader.GetString("SavedLines");
+                jumpList.Items.Add(item2);
+            }
+
+            await jumpList.SaveAsync();
         }
 
         private async void Rate(object sender, RoutedEventArgs e)

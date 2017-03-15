@@ -60,7 +60,7 @@
     </RelativePanel>
 
     <Page.BottomAppBar>
-        <CommandBar Name="commandbar">
+        <CommandBar Name="commandbar" Opacity="0.8">
             <AppBarButton Name="AppbarGo" IsEnabled="False" x:Uid="AppbarSearch" Label="Keresés" Icon="Send" Click="StartSearch" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="AppbarSettings" Label="Beállítások" Icon="Setting" Click="GotoSettings" />

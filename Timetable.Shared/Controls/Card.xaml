@@ -21,8 +21,8 @@
         <Ellipse Name="def3" Canvas.Left="65" Canvas.Top="110" Height="20" Width="20" Fill="White" />
         <Rectangle Name="def4" Canvas.Left="72.5" Canvas.Top="70" Fill="White" Height="50" Width="5" />
         <TextBlock Name="dist" Canvas.Left="25" Canvas.Top="90" Text="{Binding Distance, ElementName=userControl}" FontSize="10"  Foreground="White" />
-        <TextBlock Name="error" Canvas.Left="20" Canvas.Top="60" x:Uid="CardError" Visibility="Collapsed"  Foreground="#FFC1C1C1" />
-        <TextBlock Name="error2" Canvas.Left="20" Canvas.Top="60" x:Uid="CardError2" Visibility="Collapsed"  Foreground="#FFC1C1C1" />
+        <TextBlock Name="error" Canvas.Left="20" Canvas.Top="60" x:Uid="CardError" FontSize="15" Visibility="Collapsed"  Foreground="#FFC1C1C1" />
+        <TextBlock Name="error2" Canvas.Left="20" Canvas.Top="60" x:Uid="CardError2" FontSize="15" Visibility="Collapsed"  Foreground="#FFC1C1C1" />
         <TextBlock Name="from" Canvas.Left="90" Canvas.Top="59" Text="{Binding From, ElementName=userControl}" FontSize="15" Foreground="White" />
         <TextBlock Name="start" Canvas.Left="0" Canvas.Top="55" Text="{Binding StartTime, ElementName=userControl}" FontSize="23" FontWeight="Bold"  Foreground="White" />
         <TextBlock Name="to" Canvas.Left="90" Canvas.Top="110" Text="{Binding To, ElementName=userControl}" FontSize="15" Foreground="White" />
