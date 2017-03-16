@@ -214,7 +214,7 @@ namespace Timetable
                 string name = line.Name;
                 if (name.Trim() == "")
                     name = resourceLoader.GetString("Unnamed");
-                var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", line.Name);
+                var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", name);
                 item2.Logo = new Uri("ms-appx:///Assets/BadgeLogo.scale-100.png");
                 item2.Description = $"{line.From} - {line.To}";
                 item2.GroupName = resourceLoader.GetString("SavedLines");
