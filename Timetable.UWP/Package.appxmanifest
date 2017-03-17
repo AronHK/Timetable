@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="57722AronHK.VolnbuszMenetrend" Publisher="CN=9E992B2D-FCB2-42AB-A6BD-2D90CF3088CB" Version="1.5.2.0" />
+  <Identity Name="57722AronHK.VolnbuszMenetrend" Publisher="CN=9E992B2D-FCB2-42AB-A6BD-2D90CF3088CB" Version="1.5.3.0" />
   <mp:PhoneIdentity PhoneProductId="4043d7b5-a09a-4e69-9fce-42ab28608c19" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppName</DisplayName>
@@ -32,13 +32,13 @@
         </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.SecondaryTileUpdater">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.TileUpdater">
           <BackgroundTasks>
             <Task Type="general" />
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.TileUpdater">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Timetable.SecondaryTileUpdater">
           <BackgroundTasks>
             <Task Type="general" />
             <Task Type="timer" />

@@ -310,6 +310,9 @@ namespace Timetable
             List<Card> toDisplay = new List<Card>();
             error.Visibility = Visibility.Collapsed;
 
+            if (line.LastUpdated < DateTime.Today)
+                Update(this, null);
+
             for (int i = 0; i < line.Buses.Count; i++)
             {
                 string name, from, to;
@@ -731,7 +734,11 @@ namespace Timetable
                 if (timedata != null)
                     await line.updateOn(timedata[0], timedata[1], timedata[2]);
                 else
+                {
                     await line.updateOn(DateTime.Today);
+                    line.LastUpdated = DateTime.Today;
+                    await lineSerializer.saveLine(line);
+                }
             }
             catch (HttpRequestException)
             {

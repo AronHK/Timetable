@@ -52,7 +52,7 @@
     </Grid>
 
     <Page.BottomAppBar>
-        <CommandBar Name="commandbar">
+        <CommandBar Name="commandbar" Background="{ThemeResource PhoneAccentBrush}" Foreground="White">
             <AppBarButton Name="AppbarGo" IsEnabled="False" x:Uid="AppbarSearch" Label="Keresés" Icon="Forward" Click="StartSearch"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="AppbarSettings" Label="Beállítások" Icon="Setting" Click="GotoSettings" />

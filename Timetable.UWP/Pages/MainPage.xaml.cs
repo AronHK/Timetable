@@ -106,7 +106,7 @@ namespace Timetable
                     localSettings.Values["version"] = App.VERSION;
                 if ((string)localSettings.Values["version"] != App.VERSION)
                 {
-                    logger.Log(App.VERSION);
+                    logger.Log("Update/Install");
 
                     if ((bool)roamingSettings.Values["showlog"])
                     {

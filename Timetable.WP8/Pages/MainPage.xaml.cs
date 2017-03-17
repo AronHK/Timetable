@@ -22,13 +22,7 @@ namespace Timetable
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
             resourceLoader = ResourceLoader.GetForCurrentView();
-
-            if (Application.Current.RequestedTheme == ApplicationTheme.Light)
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                statusBar.ForegroundColor = Colors.Black;
-            }
-
+            
             //Window.Current.SizeChanged += WindowResized;
             ApplicationView.GetForCurrentView().VisibleBoundsChanged += WindowResized;
         }
@@ -38,6 +32,12 @@ namespace Timetable
             base.OnNavigatedTo(e);
             Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+
+            if (Application.Current.RequestedTheme == ApplicationTheme.Light)
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                statusBar.ForegroundColor = Colors.Black;
+            }
 
             Loaded += async (s, ev) =>
             {

@@ -608,4 +608,7 @@ szeretnéd frissíteni.</value>
   <data name="Unnamed" xml:space="preserve">
     <value>&lt;Névtelen járat&gt;</value>
   </data>
+  <data name="Changelog153.Text" xml:space="preserve">
+    <value>● Frissítési hiba javítása kitűzütt mentett járatoknál</value>
+  </data>
 </root>

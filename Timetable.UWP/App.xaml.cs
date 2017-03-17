@@ -20,7 +20,7 @@ namespace Timetable
     sealed partial class App : Application
     {
         public static ApplicationTrigger trigger;
-        public static string VERSION = "1.5.2";
+        public static string VERSION = "1.5.3";
        
         protected override async void OnActivated(IActivatedEventArgs args)
         {
