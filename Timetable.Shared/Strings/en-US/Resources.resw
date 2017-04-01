@@ -610,4 +610,7 @@ only update this line.</value>
   <data name="Changelog153.Text" xml:space="preserve">
     <value>● Fixed pinned saved lines sometimes not updating</value>
   </data>
+  <data name="Changelog154.Text" xml:space="preserve">
+    <value>● Fixed a loading issue</value>
+  </data>
 </root>

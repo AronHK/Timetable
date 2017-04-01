@@ -38,6 +38,10 @@
         <ScrollViewer Grid.Row="2" Name="scroller">
             <StackPanel>
                 <Rectangle />
+                <TextBlock Margin="10 -33 0 0" Text="v 0.8.2.4" />
+                <TextBlock x:Uid="Changelog154" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
+                
+                <Rectangle />
                 <TextBlock Margin="10 -33 0 0" Text="v 0.8.2.3" />
                 <TextBlock x:Uid="Changelog153" FontSize="18" Margin="20 5 0 20" Text="Missing resource" />
 

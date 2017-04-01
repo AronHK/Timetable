@@ -66,7 +66,27 @@ namespace Timetable.Utilities
             {
                 StorageFile datafile = await roamingFolder.GetFileAsync("linelist");
                 IList<string> lines = await FileIO.ReadLinesAsync(datafile);
+                List<string> toDelete = new List<string>();
                 lines.Remove("");
+                foreach(string line in lines)
+                {
+                    if (line.Contains("##"))
+                        toDelete.Add(line);
+                    int dividers = 0;
+                    foreach (char character in line)
+                    {
+                        if (character == '#')
+                            dividers++;
+                    }
+                    if (dividers != 6)
+                        toDelete.Add(line);
+                }
+                if (toDelete.Count > 0)
+                {
+                    foreach (string line in toDelete)
+                        lines.Remove(line);
+                    await FileIO.WriteLinesAsync(datafile, lines);
+                }
                 return lines;
             }
             catch (FileNotFoundException) { return new List<string>(); }
@@ -228,7 +248,10 @@ namespace Timetable.Utilities
                         if (savedLine == null)
                             savedLine = new Line();
                     }
-                    catch (System.Xml.XmlException) { }
+                    catch (System.Xml.XmlException)
+                    {
+                        return await restoreLine(fullname);
+                    }
                 }
                 else
                 {

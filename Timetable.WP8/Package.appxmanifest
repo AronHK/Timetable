@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="57722AronHK.VolnbuszMenetrend" Publisher="CN=9E992B2D-FCB2-42AB-A6BD-2D90CF3088CB" Version="0.8.2.3" />
+  <Identity Name="57722AronHK.VolnbuszMenetrend" Publisher="CN=9E992B2D-FCB2-42AB-A6BD-2D90CF3088CB" Version="0.8.2.4" />
   <mp:PhoneIdentity PhoneProductId="7c24e306-11bc-432e-bacb-279048a96999" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppName</DisplayName>

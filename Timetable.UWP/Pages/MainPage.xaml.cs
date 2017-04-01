@@ -103,10 +103,13 @@ namespace Timetable
                 }
 
                 if (localSettings.Values["version"] == null)
+                {
                     localSettings.Values["version"] = App.VERSION;
+                    logger.Log("Install");
+                }
                 if ((string)localSettings.Values["version"] != App.VERSION)
                 {
-                    logger.Log("Update/Install");
+                    logger.Log("Update");
 
                     if ((bool)roamingSettings.Values["showlog"])
                     {
@@ -211,14 +214,17 @@ namespace Timetable
 
             foreach (Line line in savedLines)
             {
-                string name = line.Name;
-                if (name.Trim() == "")
-                    name = resourceLoader.GetString("Unnamed");
-                var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", name);
-                item2.Logo = new Uri("ms-appx:///Assets/BadgeLogo.scale-100.png");
-                item2.Description = $"{line.From} - {line.To}";
-                item2.GroupName = resourceLoader.GetString("SavedLines");
-                jumpList.Items.Add(item2);
+                if (line.Name != null)
+                {
+                    string name = line.Name;
+                    if (name.Trim() == "")
+                        name = resourceLoader.GetString("Unnamed");
+                    var item2 = JumpListItem.CreateWithArguments($"{line.FromsID}-{line.FromlsID}-{line.TosID}-{line.TolsID}", name);
+                    item2.Logo = new Uri("ms-appx:///Assets/BadgeLogo.scale-100.png");
+                    item2.Description = $"{line.From} - {line.To}";
+                    item2.GroupName = resourceLoader.GetString("SavedLines");
+                    jumpList.Items.Add(item2);
+                }
             }
 
             await jumpList.SaveAsync();

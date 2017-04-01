@@ -29,6 +29,10 @@
         <ScrollViewer Name="scroller" RelativePanel.Below="desc" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible" IsTabStop="True">
             <StackPanel Name="panel">
                 <Rectangle />
+                <TextBlock Margin="10 -26 0 0" Text="v 1.5.4" />
+                <TextBlock x:Uid="Changelog154" Margin="20 0 0 20" FontSize="13" Text="Missing resource" />
+                
+                <Rectangle />
                 <TextBlock Margin="10 -26 0 0" Text="v 1.5.3" />
                 <TextBlock x:Uid="Changelog153" Margin="20 0 0 20" FontSize="13" Text="Missing resource" />
                 

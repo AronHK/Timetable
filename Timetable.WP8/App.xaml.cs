@@ -19,7 +19,7 @@ namespace Timetable
     public sealed partial class App : Application
     {
         private TransitionCollection transitions;
-        public static string VERSION = "0.8.2.3";
+        public static string VERSION = "0.8.2.4";
 
         private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
         {

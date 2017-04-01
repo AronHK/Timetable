@@ -611,4 +611,7 @@ szeretnéd frissíteni.</value>
   <data name="Changelog153.Text" xml:space="preserve">
     <value>● Frissítési hiba javítása kitűzütt mentett járatoknál</value>
   </data>
+  <data name="Changelog154.Text" xml:space="preserve">
+    <value>● Betöltési hiba javítva</value>
+  </data>
 </root>
