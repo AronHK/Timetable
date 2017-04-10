@@ -56,8 +56,13 @@ namespace Timetable
                 roamingSettings.Values["reminder"] = "15";
             if (localSettings.Values["theme"] == null)
                 localSettings.Values["theme"] = 0;
-            if (roamingSettings.Values["alwaysupdate"] == null)
-                roamingSettings.Values["alwaysupdate"] = true;
+            if (localSettings.Values["alwaysupdate"] == null)
+            {
+                if (roamingSettings.Values["alwaysupdate"] != null)
+                    localSettings.Values["alwaysupdate"] = roamingSettings.Values["alwaysupdate"];
+                else
+                    localSettings.Values["alwaysupdate"] = true;
+            }
             if (roamingSettings.Values["sort"] == null)
                 roamingSettings.Values["sort"] = 1;
             if (roamingSettings.Values["showlog"] == null)
@@ -116,7 +121,7 @@ namespace Timetable
                 {
                     BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
                     builder2.Name = "ScheduledTileUpdater";
-                    builder2.TaskEntryPoint = typeof(TileUpdater).FullName;
+                    builder2.TaskEntryPoint = "Timetable.TileUpdater";
                     TimeTrigger trigger = new TimeTrigger(frequency, false);
                     builder2.SetTrigger(trigger);
                     builder2.Register();
@@ -134,7 +139,7 @@ namespace Timetable
                 {
                     BackgroundTaskBuilder builder4 = new BackgroundTaskBuilder();
                     builder4.Name = "ScheduledSecondaryTileUpdater";
-                    builder4.TaskEntryPoint = typeof(SecondaryTileUpdater).FullName;
+                    builder4.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
                     TimeTrigger trigger = new TimeTrigger(frequency, false);
                     builder4.SetTrigger(trigger);
                     builder4.Register();
@@ -145,7 +150,7 @@ namespace Timetable
             // for manual activation of secondary tile update
             BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
             builder.Name = "RunSecondaryTileUpdater";
-            builder.TaskEntryPoint = typeof(SecondaryTileUpdater).FullName;
+            builder.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
             trigger = new ApplicationTrigger();
             builder.SetTrigger(trigger);
             try { builder.Register(); } catch (Exception) { }

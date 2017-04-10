@@ -83,7 +83,7 @@ namespace Timetable
                 else
                     localSettings.Values["location"] = true;
             }
-            await getSavedData(false);
+            await getSavedData();
         }
 
         private void WindowResized(ApplicationView sender, object args)

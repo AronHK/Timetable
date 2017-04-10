@@ -494,7 +494,7 @@ or tomorrow...</value>
 only update this line.</value>
   </data>
   <data name="AutoUpdate.Text" xml:space="preserve">
-    <value>Sync on limited connections</value>
+    <value>Sync on metered connection</value>
   </data>
   <data name="BackgroundSettings.Text" xml:space="preserve">
     <value>Background activity</value>
@@ -507,9 +507,6 @@ only update this line.</value>
   </data>
   <data name="SearchSettings.Text" xml:space="preserve">
     <value>Search parameters</value>
-  </data>
-  <data name="WifiUpdate.Text" xml:space="preserve">
-    <value>Sync after connecting to Wifi</value>
   </data>
   <data name="FileerrorHeader" xml:space="preserve">
     <value>Error Accessing File!</value>
@@ -612,5 +609,9 @@ only update this line.</value>
   </data>
   <data name="Changelog154.Text" xml:space="preserve">
     <value>● Fixed a loading issue</value>
+  </data>
+  <data name="Changelog155.Text" xml:space="preserve">
+    <value>● Fixed crashes on very slow or no internet connection
+● Improved primary Live Tile</value>
   </data>
 </root>

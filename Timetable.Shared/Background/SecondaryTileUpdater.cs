@@ -27,7 +27,10 @@ namespace Timetable
             Utilities.LineSerializer lineSerializer = new Utilities.LineSerializer(resourceLoader);
             //IList<Line> savedLines = await lineSerializer.readLines();
 
-            var cost = NetworkInformation.GetInternetConnectionProfile().GetConnectionCost().NetworkCostType;
+            var profile = NetworkInformation.GetInternetConnectionProfile();
+            NetworkCostType cost = NetworkCostType.Unknown;
+            if (profile != null)
+                cost = profile.GetConnectionCost().NetworkCostType;
 
             // get secondary tiles
             var tiles = await SecondaryTile.FindAllForPackageAsync();
@@ -40,7 +43,7 @@ namespace Timetable
                     Line line = await lineSerializer.openLine(tileData[1], tileData[2], tileData[3], tileData[4], tileData2[0], tileData2[1]);
 
 
-                    if (((bool)roamingSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date) // update only if necessary
+                    if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date) // update only if necessary
                     {
                         try { await line.updateOn(); }
                         catch (System.Net.Http.HttpRequestException) { return; }
@@ -93,7 +96,7 @@ namespace Timetable
                                             showUpdateAt = DateTime.Parse(prevfromtime).AddSeconds(30);
 
                                         ScheduledTileNotification scheduledUpdate = new ScheduledTileNotification(xmlDoc, new DateTimeOffset(showUpdateAt));
-                                        scheduledUpdate.ExpirationTime = DateTime.Today.AddDays(1).AddHours(3);
+                                        scheduledUpdate.ExpirationTime = new DateTimeOffset(DateTime.Today.AddDays(1).AddHours(1));
                                         updatemngr.AddToSchedule(scheduledUpdate);
 
                                         prevfromtime = fromtime;
@@ -130,7 +133,7 @@ namespace Timetable
                                             DateTime showUpdateAt = DateTime.Now.AddSeconds(1);
 
                                             ScheduledTileNotification scheduledUpdate = new ScheduledTileNotification(xmlDoc, new DateTimeOffset(showUpdateAt));
-                                            scheduledUpdate.ExpirationTime = DateTime.Today.AddDays(1).AddHours(3);
+                                            scheduledUpdate.ExpirationTime = new DateTimeOffset(DateTime.Today.AddDays(1).AddHours(1));
                                             updatemngr.AddToSchedule(scheduledUpdate);
                                         }
 

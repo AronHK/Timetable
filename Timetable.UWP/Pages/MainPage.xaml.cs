@@ -156,7 +156,7 @@ namespace Timetable
                 await dialog.ShowAsync();
             }
 
-            await getSavedData(false);
+            await getSavedData();
         }
 
         //private void WindowResized(object sender, WindowSizeChangedEventArgs e)
@@ -244,7 +244,7 @@ namespace Timetable
         private async void KeyupEvent(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.GamepadX)
-                await getSavedData(true);
+                await getSavedData(UpdateMethod.ALWAYS);
 
             if (e.Key == Windows.System.VirtualKey.GamepadY)
             {

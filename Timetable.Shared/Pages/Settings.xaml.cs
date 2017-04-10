@@ -87,7 +87,7 @@ namespace Timetable
 
             Theme.SelectedIndex = (int)localSettings.Values["theme"];
             Exactres.IsOn = (bool)roamingSettings.Values["exact"];
-            AlwaysUpdate.IsOn = (bool)roamingSettings.Values["alwaysupdate"];
+            AlwaysUpdate.IsOn = (bool)localSettings.Values["alwaysupdate"];
             Linechange.IsOn = (bool)roamingSettings.Values["canchange"];
             Showlog.IsOn = (bool)roamingSettings.Values["showlog"];
 
@@ -307,7 +307,7 @@ namespace Timetable
 
         private void AlwaysUpdate_Toggled(object sender, RoutedEventArgs e)
         {
-            roamingSettings.Values["alwaysupdate"] = AlwaysUpdate.IsOn;
+            localSettings.Values["alwaysupdate"] = AlwaysUpdate.IsOn;
         }
 
         private void Showlog_Toggled(object sender, RoutedEventArgs e)

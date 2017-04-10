@@ -275,8 +275,12 @@ namespace Timetable.Utilities
             string[] lineData = filename.Split('#');
             Line lineToRestore = new Line(lineData[1], lineData[3], lineData[2], lineData[4], lineData[5], lineData[6]);
             lineToRestore.Name = linename;
-            await lineToRestore.updateOn();
-            await DoSaveLine(lineToRestore);
+            try
+            {
+                await lineToRestore.updateOn();
+                await DoSaveLine(lineToRestore);
+            }
+            catch (System.Net.Http.HttpRequestException) { }
             return lineToRestore;
         }
 

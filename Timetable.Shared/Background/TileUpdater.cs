@@ -36,7 +36,10 @@ namespace Timetable
                 mainmngr.RemoveFromSchedule(tile);
             mainmngr.Clear();
 
-            var cost = NetworkInformation.GetInternetConnectionProfile().GetConnectionCost().NetworkCostType;
+            var profile = NetworkInformation.GetInternetConnectionProfile();
+            NetworkCostType cost = NetworkCostType.Unknown;
+            if (profile != null)
+                cost = profile.GetConnectionCost().NetworkCostType;
 
             if (town != null)
             {
@@ -47,7 +50,7 @@ namespace Timetable
                 // update lines
                 foreach (var line in linesfromhere)
                 {
-                    if (((bool)roamingSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date)
+                    if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date)
                     {
                         try { await line.updateOn(DateTime.Today); }
                         catch (System.Net.Http.HttpRequestException) { return; }
@@ -63,7 +66,7 @@ namespace Timetable
                 int minind;
                 string prevfromtime = "";
                 bool first = true;
-
+                
                 // go through all possible lines
                 while (!done)
                 {
@@ -87,18 +90,24 @@ namespace Timetable
                             linesfromhere[j].Buses[i].TryGetValue("erkezesi_hely", out to);
                             num = num.Split('|')[0];
 
-                            if (DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture) >= DateTime.Now && DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture) < mintime)
+                            var fromtime_date = DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture);
+
+                            if (fromtime_date >= DateTime.Now && !(!(bool)roamingSettings.Values["canchange"] && num == " ∙∙∙") &&
+                                !((bool)roamingSettings.Values["exact"] && ((linesfromhere[j].From != from && linesfromhere[j].From.Contains(",")) || (linesfromhere[j].To != to && linesfromhere[j].To.Contains(",")))))
                             {
-                                if (!(!(bool)roamingSettings.Values["canchange"] && num == " ∙∙∙") && !((bool)roamingSettings.Values["exact"] && ((linesfromhere[j].From != from && linesfromhere[j].From.Contains(",")) || (linesfromhere[j].To != to && linesfromhere[j].To.Contains(",")))))
+                                if (fromtime_date < mintime)
                                 {
                                     minind = j;
-                                    mintime = DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture);
+                                    mintime = fromtime_date;
                                 }
-                                else if (linesfromhere[j].Buses.Count - 1 > busindices[j])
-                                    busindices[j]++;
-                                else
-                                    busindices[j] = -1;
                             }
+                            else if (linesfromhere[j].Buses.Count - 1 > busindices[j])
+                            {
+                                busindices[j]++;
+                                j--;
+                            }
+                            else
+                                busindices[j] = -1;
                         }
                     }
 
@@ -119,14 +128,14 @@ namespace Timetable
                         DateTime showUpdateAt;
                         if (first)
                         {
-                            showUpdateAt = DateTime.Now.AddSeconds(1);
+                            showUpdateAt = DateTime.Now.AddSeconds(5);
                             first = false;
                         }
                         else
                             showUpdateAt = DateTime.Parse(prevfromtime).AddSeconds(30);
 
                         ScheduledTileNotification scheduledUpdate = new ScheduledTileNotification(xmlDoc, new DateTimeOffset(showUpdateAt));
-                        scheduledUpdate.ExpirationTime = DateTime.Today.AddDays(1).AddHours(3);
+                        scheduledUpdate.ExpirationTime = new DateTimeOffset(DateTime.Today.AddDays(1).AddHours(1));
                         mainmngr.AddToSchedule(scheduledUpdate);
 
                         prevfromtime = fromtime;
@@ -135,16 +144,11 @@ namespace Timetable
                         else
                             busindices[minind] = -1;
                     }
-                    else
-                    {
-                        for (int i = 0; i < busindices.Count; i++)
-                            busindices[i]++;
-                    }
-
+                    
                     done = true;
                     for (int i = 0; i < busindices.Count; i++)
                     {
-                        if (busindices[i] == linesfromhere[i].Buses.Count - 1)
+                        if (busindices[i] == linesfromhere[i].Buses.Count)
                             busindices[i] = -1;
                         if (busindices[i] != -1)
                             done = false;

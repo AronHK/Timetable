@@ -98,7 +98,7 @@ namespace Timetable
                     dialog.Commands.Add(new UICommand("OK", (command) => { Frame.GoBack(); }));
                     dialog.CancelCommandIndex = 0;
                     dialog.DefaultCommandIndex = 0;
-                    await dialog.ShowAsync();
+                    try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
                     return;
                 }
             }
@@ -753,7 +753,7 @@ namespace Timetable
                 dialog.Commands.Add(new UICommand("OK", (command) => { Frame.GoBack(); }));
                 dialog.CancelCommandIndex = 0;
                 dialog.DefaultCommandIndex = 0;
-                await dialog.ShowAsync();
+                try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
                 return;
             }
             if (line.Error)
@@ -762,7 +762,7 @@ namespace Timetable
                 dialog.Commands.Add(new UICommand("OK", (command) => { Frame.GoBack(); }));
                 dialog.CancelCommandIndex = 0;
                 dialog.DefaultCommandIndex = 0;
-                await dialog.ShowAsync();
+                try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
             }
             else
                 sortLines((int)roamingSettings.Values["sort"]);

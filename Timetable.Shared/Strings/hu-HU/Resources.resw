@@ -509,9 +509,6 @@ szeretnéd frissíteni.</value>
   <data name="SearchSettings.Text" xml:space="preserve">
     <value>Keresési paraméterek</value>
   </data>
-  <data name="WifiUpdate.Text" xml:space="preserve">
-    <value>Frissítés Wifire csatlakozáskor</value>
-  </data>
   <data name="FileerrorHeader" xml:space="preserve">
     <value>Fájlhozzáférési hiba!</value>
   </data>
@@ -613,5 +610,9 @@ szeretnéd frissíteni.</value>
   </data>
   <data name="Changelog154.Text" xml:space="preserve">
     <value>● Betöltési hiba javítva</value>
+  </data>
+  <data name="Changelog155.Text" xml:space="preserve">
+    <value>● Összeomlás javítása nagyon lassú, vagy kikapcsolt internet esetén
+● Elsődleges Élő Csempe adatai javítva</value>
   </data>
 </root>

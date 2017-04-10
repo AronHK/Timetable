@@ -34,7 +34,9 @@ namespace Timetable
         private ResourceLoader resourceLoader;
         private Utilities.LineSerializer lineSerializer;
 
-        private async Task getSavedData(bool update, int toupdate = -1)
+        private enum UpdateMethod : int { NEVER, IFOUTOFDATE, ALWAYS };
+
+        private async Task getSavedData(UpdateMethod update = UpdateMethod.IFOUTOFDATE, int toupdate = -1)
         {
             // LOAD SAVED DATA
             lineSerializer = new Utilities.LineSerializer(ResourceLoader.GetForViewIndependentUse());
@@ -87,6 +89,7 @@ namespace Timetable
 
                 string tomorrow;
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+                Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
                 //List<Card> toAdd = new List<Card>();
                 for (int i = 0; i < savedLines.Count; i++) // for each line
@@ -97,8 +100,12 @@ namespace Timetable
                     {
                         toDisplay = -1;
                         DateTime updateday = DateTime.Today.Date.AddDays(k);
-                        var cost = NetworkInformation.GetInternetConnectionProfile().GetConnectionCost().NetworkCostType;
-                        if (update || toupdate == i || (((bool)roamingSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && savedLines[i].LastUpdated < updateday)) // update if we haven't updated yet today
+                        var profile = NetworkInformation.GetInternetConnectionProfile();
+                        NetworkCostType cost = NetworkCostType.Unknown;
+                        if (profile != null)
+                            cost = profile.GetConnectionCost().NetworkCostType;
+                        
+                        if (update != UpdateMethod.NEVER && (update == UpdateMethod.ALWAYS || toupdate == i || (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && savedLines[i].LastUpdated < updateday))) // update if we haven't updated yet today
                         {
                             inprogresstext.Visibility = Visibility.Visible;
                             savedLines[i].Buses = null;
@@ -117,7 +124,8 @@ namespace Timetable
                                 dialog.Commands.Add(new UICommand("OK"));
                                 dialog.CancelCommandIndex = 0;
                                 dialog.DefaultCommandIndex = 0;
-                                await dialog.ShowAsync();
+                                try {await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
+                                await getSavedData(UpdateMethod.NEVER);
                                 return;
                             }
 
@@ -144,7 +152,7 @@ namespace Timetable
                             break;
                         if (savedLines[i].LastUpdated > DateTime.Today)
                             k++;
-                        /*if (!(bool)roamingSettings.Values["alwaysupdate"] && cost != NetworkCostType.Unrestricted && (toupdate != i || !update))
+                        /*if (!(bool)localSettings.Values["alwaysupdate"] && cost != NetworkCostType.Unrestricted && (toupdate != i || !update))
                         {
                             if (k == 0 && toDisplay == -1 && savedLines[i].LastUpdated <= DateTime.Today)
                                 savedLines[i].LastUpdated = DateTime.Today.AddDays(-1);
@@ -192,9 +200,9 @@ namespace Timetable
                 inprogress.IsActive = false;
                 inprogressbg.Visibility = Visibility.Collapsed;
                 inprogresstext.Visibility = Visibility.Collapsed;
-                AppbarUpdate.IsEnabled = true;
             }
 
+            AppbarUpdate.IsEnabled = true;
 #if WINDOWS_UWP
             UpdateJumplist();
 #endif
@@ -273,7 +281,7 @@ namespace Timetable
                         error = 0;
                         sender.ParentLine.Name = namebox.Text.Trim();
                         await lineSerializer.saveLine(sender.ParentLine);
-                        await getSavedData(false);
+                        await getSavedData();
                     }
                 }
             };
@@ -290,7 +298,7 @@ namespace Timetable
                     error = 0;
                     sender.ParentLine.Name = namebox.Text.Trim();
                     await lineSerializer.saveLine(sender.ParentLine);
-                    await getSavedData(false);
+                    await getSavedData();
                 }
             };
 
@@ -327,7 +335,7 @@ namespace Timetable
                     //await sender.ParentLine.updateOn(DateTime.Today.Date.ToString("yyyy-MM-dd"));
                     //sender.ParentLine.lastUpdated = DateTime.Today;
                     //await LineSerializer.writeLines(savedLines);
-                    await getSavedData(false, i);
+                    await getSavedData(UpdateMethod.IFOUTOFDATE, i);
                 }
                 catch (HttpRequestException)
                 {
@@ -336,7 +344,7 @@ namespace Timetable
                     dialog.Commands.Add(new UICommand("OK"));
                     dialog.CancelCommandIndex = 0;
                     dialog.DefaultCommandIndex = 0;
-                    await dialog.ShowAsync();
+                    try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
                 }
             }
         }
@@ -378,7 +386,7 @@ namespace Timetable
             {
                 PinLine(this, null, toDelete, true);
                 await lineSerializer.removeLine(toDelete.ParentLine);
-                await getSavedData(false);
+                await getSavedData();
             }));
             dialog.Commands.Add(new UICommand(resourceLoader.GetString("No")));
 
@@ -390,7 +398,8 @@ namespace Timetable
 
         private async void Update(object sender, RoutedEventArgs e)
         {
-            await getSavedData(true);
+            AppbarUpdate.IsEnabled = false;
+            await getSavedData(UpdateMethod.ALWAYS);
         }
     }
 }

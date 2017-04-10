@@ -154,6 +154,8 @@ namespace Timetable
                 var content = new FormUrlEncodedContent(values);
 
                 var response = await client.PostAsync("http://menetrendek.hu/uj_menetrend/hu/talalatok_json.php", content);
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    throw new HttpRequestException();
                 responseString = await response.Content.ReadAsStringAsync();
             }
 

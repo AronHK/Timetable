@@ -211,7 +211,7 @@ namespace Timetable
                 dialog.CancelCommandIndex = 0;
                 dialog.DefaultCommandIndex = 0;
 
-                await dialog.ShowAsync();
+                try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
             }
             else                                        // get stored IDs based on the index found earlier
             {
@@ -376,15 +376,24 @@ namespace Timetable
 
                     var content = new FormUrlEncodedContent(values);
                     HttpResponseMessage response = null;
-                    try { response = await client.PostAsync("http://menetrendek.hu/uj_menetrend/hu/ajax_response_gen.php", content); }
+                    try
+                    {
+                        response = await client.PostAsync("http://menetrendek.hu/uj_menetrend/hu/ajax_response_gen.php", content);
+                        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                            throw new HttpRequestException();
+                    }
                     catch (Exception)
                     {
                         var dialog = new MessageDialog(resourceLoader.GetString("NetworkError"), resourceLoader.GetString("NetworkErrorTitle"));
-                        dialog.Commands.Add(new UICommand("OK", (command) => { Frame.GoBack(); }));
+                        dialog.Commands.Add(new UICommand("OK", (command) =>
+                        {
+                             if (Frame.CanGoBack)
+                                 Frame.GoBack();
+                        }));
                         dialog.CancelCommandIndex = 0;
                         dialog.DefaultCommandIndex = 0;
-                        await dialog.ShowAsync();
-                        return;
+                    try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
+                    return;
                     }
 
                     var codes = await response.Content.ReadAsStringAsync();
