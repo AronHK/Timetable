@@ -105,7 +105,7 @@ namespace Timetable
             else if (e.Parameter is Line)   // [entry point from MAIN PAGE, TILE or TOAST]
             {
                 line = (Line)e.Parameter;
-                title.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
+                title.Text = line.Name == "" ? resourceLoader.GetString("ResultTitleSaved") + resourceLoader.GetString("Unnamed") : resourceLoader.GetString("ResultTitleSaved") + line.Name;
 
                 AppbarSave.Visibility = Visibility.Collapsed;
                 AppbarUnsave.Visibility = Visibility.Visible;
@@ -118,7 +118,7 @@ namespace Timetable
                 AppbarRename2.Visibility = Visibility.Visible;
                 XboxUpdate.Visibility = Visibility.Visible;
 
-                title2.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
+                title2.Text = line.Name == "" ? resourceLoader.GetString("ResultTitleSaved") + resourceLoader.GetString("Unnamed") : resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #endif
                 // is the line pinned?
                 var tiles = await SecondaryTile.FindAllForPackageAsync();
@@ -641,9 +641,9 @@ namespace Timetable
                         dialog.Hide();
                         error = 0;
                         line.Name = namebox.Text.Trim();
-                        title.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
+                        title.Text = line.Name == "" ? resourceLoader.GetString("ResultTitleSaved") + resourceLoader.GetString("Unnamed") : resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #if WINDOWS_UWP
-                        title2.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
+                        title2.Text = line.Name == "" ? resourceLoader.GetString("ResultTitleSaved") + resourceLoader.GetString("Unnamed") : resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #endif
                         await lineSerializer.saveLine(line);
                     }
@@ -662,9 +662,9 @@ namespace Timetable
                 {
                     error = 0;
                     line.Name = namebox.Text.Trim();
-                    title.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
+                    title.Text = line.Name == "" ? resourceLoader.GetString("ResultTitleSaved") + resourceLoader.GetString("Unnamed") : resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #if WINDOWS_UWP
-                    title2.Text = resourceLoader.GetString("ResultTitleSaved") + line.Name;
+                    title2.Text = line.Name == "" ? resourceLoader.GetString("ResultTitleSaved") + resourceLoader.GetString("Unnamed") : resourceLoader.GetString("ResultTitleSaved") + line.Name;
 #endif
                     await lineSerializer.saveLine(line);
                 }

@@ -33,7 +33,7 @@ namespace Timetable
 #endif
 
             parentLine = line;
-            LineName = line.Name;
+            LineName = line.Name == "" ? resourceLoader.GetString("Unnamed") : line.Name;
             busIndex = i;
 
             if (line.Buses.Count > 0 && i >= 0)

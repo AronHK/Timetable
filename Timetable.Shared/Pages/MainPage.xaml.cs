@@ -33,15 +33,17 @@ namespace Timetable
         private IReadOnlyList<SecondaryTile> tiles;
         private ResourceLoader resourceLoader;
         private Utilities.LineSerializer lineSerializer;
+        private DateTime lastRefreshed;
 
         private enum UpdateMethod : int { NEVER, IFOUTOFDATE, ALWAYS };
 
         private async Task getSavedData(UpdateMethod update = UpdateMethod.IFOUTOFDATE, int toupdate = -1)
         {
+            lastRefreshed = DateTime.Now;
+
             // LOAD SAVED DATA
             lineSerializer = new Utilities.LineSerializer(ResourceLoader.GetForViewIndependentUse());
             savedLines = await lineSerializer.readLines();
-            //LineList.ItemsSource = null;
             LineList.Items.Clear();
 
             //DISPLAY DATA
@@ -52,7 +54,6 @@ namespace Timetable
                 inprogress.IsActive = false;
                 inprogressbg.Visibility = Visibility.Collapsed;
                 inprogresstext.Visibility = Visibility.Collapsed;
-                //error.Focus(FocusState.Programmatic);
 #if WINDOWS_UWP
                 if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
                 {
@@ -400,6 +401,12 @@ namespace Timetable
         {
             AppbarUpdate.IsEnabled = false;
             await getSavedData(UpdateMethod.ALWAYS);
+        }
+
+        private async void Current_Activated(object sender, WindowActivatedEventArgs e)
+        {
+            if (lastRefreshed.AddMinutes(5) < DateTime.Now)
+                await getSavedData(UpdateMethod.IFOUTOFDATE);
         }
     }
 }

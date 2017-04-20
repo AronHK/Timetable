@@ -34,10 +34,10 @@
             <Image Source="{ThemeResource ViewIcon}" Height="30" />
             <TextBlock x:Uid="HintSettings" Text="ERROR" Margin="5, 5, 0, 0" />
         </StackPanel>
-        
-        <Rectangle Name="inprogressbg" Visibility="Visible" Fill="Black" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" Opacity="0.9" Margin="-100" />
+
+        <Rectangle Name="inprogressbg" Visibility="Visible" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" Opacity="0.9" Margin="-100" />
         <ProgressRing Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" Height="60" Width="60" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="0 0 0 100" />
-        <TextBlock Name="inprogresstext" Visibility="Collapsed" x:Uid="Loading" Foreground="{ThemeResource CheckBoxBackgroundThemeBrush}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="0 0 0 -10" FontSize="14" />
+        <TextBlock Name="inprogresstext" Visibility="Collapsed" x:Uid="Loading" Foreground="{ThemeResource AppBarItemForegroundThemeBrush}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="0 0 0 -10" FontSize="14" />
     </RelativePanel>
     
     <Page.BottomAppBar>

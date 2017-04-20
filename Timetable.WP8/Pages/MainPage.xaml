@@ -26,9 +26,9 @@
         <GridView Grid.Row="1" Name="LineList" HorizontalAlignment="Center">
         </GridView>
         <TextBlock Grid.Row="1" Name="error" FontSize="19" x:Uid="Notfound" HorizontalAlignment="Center" Margin="0 60 0 0" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
-        <Rectangle Grid.RowSpan="2" Name="inprogressbg" Fill="Black" Opacity="0.9" Margin="-50" />
-        <ProgressRing Grid.RowSpan="2" Name="inprogress" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource PhoneAccentBrush}" Height="60" Width="60" />
-        <TextBlock Grid.RowSpan="2" Name="inprogresstext" Visibility="Collapsed" x:Uid="Loading" Foreground="{ThemeResource CheckBoxBackgroundThemeBrush}" FontSize="14" />
+        <Rectangle Grid.RowSpan="2" Name="inprogressbg" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.9" Margin="-50" />
+        <ProgressRing Grid.RowSpan="2" Name="inprogress" Margin="0 -70 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource PhoneAccentBrush}" Height="60" Width="60" />
+        <TextBlock Grid.RowSpan="2" Name="inprogresstext" Margin="0 50 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" x:Uid="Loading" Foreground="{ThemeResource AppBarItemForegroundThemeBrush}" FontSize="15" />
     </Grid>
 
     <Page.BottomAppBar>

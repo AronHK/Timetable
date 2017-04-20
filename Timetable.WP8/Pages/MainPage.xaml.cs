@@ -25,6 +25,7 @@ namespace Timetable
             
             //Window.Current.SizeChanged += WindowResized;
             ApplicationView.GetForCurrentView().VisibleBoundsChanged += WindowResized;
+            Window.Current.Activated += Current_Activated;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
