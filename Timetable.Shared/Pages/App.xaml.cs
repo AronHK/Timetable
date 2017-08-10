@@ -121,7 +121,8 @@ namespace Timetable
                 {
                     BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
                     builder2.Name = "ScheduledTileUpdater";
-                    builder2.TaskEntryPoint = "Timetable.TileUpdater";
+                    builder2.TaskEntryPoint = typeof(TileUpdater).FullName;
+                    builder2.IsNetworkRequested = true;
                     TimeTrigger trigger = new TimeTrigger(frequency, false);
                     builder2.SetTrigger(trigger);
                     builder2.Register();
@@ -139,7 +140,8 @@ namespace Timetable
                 {
                     BackgroundTaskBuilder builder4 = new BackgroundTaskBuilder();
                     builder4.Name = "ScheduledSecondaryTileUpdater";
-                    builder4.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
+                    builder4.TaskEntryPoint = typeof(SecondaryTileUpdater).FullName;
+                    builder4.IsNetworkRequested = true;
                     TimeTrigger trigger = new TimeTrigger(frequency, false);
                     builder4.SetTrigger(trigger);
                     builder4.Register();
@@ -150,7 +152,7 @@ namespace Timetable
             // for manual activation of secondary tile update
             BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
             builder.Name = "RunSecondaryTileUpdater";
-            builder.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
+            builder.TaskEntryPoint = typeof(SecondaryTileUpdater).FullName;
             trigger = new ApplicationTrigger();
             builder.SetTrigger(trigger);
             try { builder.Register(); } catch (Exception) { }

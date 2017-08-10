@@ -388,7 +388,7 @@ namespace Timetable
             {
                 if ((s == 1 || s == 2) && LineList.Items.Count > 0)
                 {
-                    LineList.SelectedIndex = (pos == toDisplay.Count - 1 ? pos : pos + 1);
+                    LineList.SelectedIndex = (pos == LineList.Items.Count - 1 ? pos : pos + 1);
                     if (pos != linenum - 1)
                         pos++;
                     LineList.ScrollIntoView(LineList.Items[LineList.Items.Count - 1]);

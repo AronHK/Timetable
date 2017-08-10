@@ -33,7 +33,7 @@ namespace Timetable.Utilities
                     <visual branding='none'>
                         <binding template='TileSmall'>
                             <text hint-style='base'>{fromtime}</text>
-                            <text hint-style='captionSubtle'>{tomorrowshort}{name}</text>
+                            <text hint-style='captionSubtle'>{tomorrowshort}{name.Replace("<", "&lt;")}</text>
                             <text hint-style='captionSubtle'>{fromshort}</text>
                         </binding>
                         <binding template='TileMedium' hint-textStacking='center'>
@@ -45,19 +45,19 @@ namespace Timetable.Utilities
                                     <text hint-style='captionSubtle'>{tomorrow}</text>
                                 </subgroup>
                             </group>
-                            <text hint-style='bodySubtle'>{name}</text>
+                            <text hint-style='bodySubtle'>{name.Replace("<", "&lt;")}</text>
                             <text hint-style='caption'>{fromtime} {from}</text>
                             <text hint-style='caption'>{totime} {to}</text>
                         </binding>
                         <binding template='TileWide'
-                            hint-lockDetailedStatus1='{num} {name}'
+                            hint-lockDetailedStatus1='{num} {name.Replace("<", "&lt;")}'
                             hint-lockDetailedStatus2='{fromtime} {from}'
                             hint-lockDetailedStatus3='{totime} {to}'>
                             <group>
                                 {widenum}
                                 <subgroup hint-weight='{titleweight}'>
                                     <text hint-style='captionSubtle'>{tomorrowlong}</text>
-                                    <text hint-style='baseSubtle'>{name}</text>
+                                    <text hint-style='baseSubtle'>{name.Replace("<", "&lt;")}</text>
                                 </subgroup>
                             </group>
                             <group>

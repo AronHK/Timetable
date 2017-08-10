@@ -494,7 +494,7 @@ or tomorrow...</value>
 only update this line.</value>
   </data>
   <data name="AutoUpdate.Text" xml:space="preserve">
-    <value>Sync on metered connection</value>
+    <value>Sync on metered connections</value>
   </data>
   <data name="BackgroundSettings.Text" xml:space="preserve">
     <value>Background activity</value>

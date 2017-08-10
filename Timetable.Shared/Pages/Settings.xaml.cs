@@ -232,6 +232,7 @@ namespace Timetable
                         BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
                         builder.Name = "ScheduledTileUpdater";
                         builder.TaskEntryPoint = "Timetable.TileUpdater";
+                        builder.IsNetworkRequested = true;
                         TimeTrigger timetrigger = new TimeTrigger(frequency, false);
                         builder.SetTrigger(timetrigger);
                         builder.Register();
@@ -247,6 +248,7 @@ namespace Timetable
                         BackgroundTaskBuilder builder2 = new BackgroundTaskBuilder();
                         builder2.Name = "ScheduledSecondaryTileUpdater";
                         builder2.TaskEntryPoint = "Timetable.SecondaryTileUpdater";
+                        builder2.IsNetworkRequested = true;
                         TimeTrigger timetrigger2 = new TimeTrigger(frequency, false);
                         builder2.SetTrigger(timetrigger2);
                         builder2.Register();

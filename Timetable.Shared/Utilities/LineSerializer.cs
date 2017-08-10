@@ -272,7 +272,7 @@ namespace Timetable.Utilities
 
         private async Task<Line> restoreLine(string filename, string linename = "")
         {
-            if (linename == "")
+            if (linename.Trim() == "")
                 linename = resourceLoader.GetString("Unnamed");
             string[] lineData = filename.Split('#');
             Line lineToRestore = new Line(lineData[1], lineData[3], lineData[2], lineData[4], lineData[5], lineData[6]);

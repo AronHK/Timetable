@@ -24,6 +24,7 @@ namespace Timetable.Utilities
 
             try
             {
+                MapService.ServiceToken = "sTHkEbHCyiH_iqm85_CC9A";
                 Geolocator geolocator = new Geolocator();
                 geolocator.DesiredAccuracyInMeters = 1500;
                 Geoposition pos = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(1));

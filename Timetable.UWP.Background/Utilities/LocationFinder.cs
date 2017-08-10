@@ -25,6 +25,7 @@ namespace Timetable.Utilities
 
             if (accessStatus == GeolocationAccessStatus.Allowed)
             {
+                MapService.ServiceToken = "lxJiVzjPvY4QkfSEgGkJ~N1FxApXmFRQDiReZBeDlfg~AsJ7th7S8_VQhANRLPT4G0IJCk-T_sUZzRgcRFzl5XjkYrEOvJg5jwUpdXv75xEA";
                 Geolocator geolocator = new Geolocator();
                 geolocator.DesiredAccuracyInMeters = 1500;
                 Geoposition pos = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(1));

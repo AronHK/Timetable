@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.Data.Xml.Dom;
+using Windows.Foundation;
 using Windows.Networking.Connectivity;
 using Windows.Storage;
 using Windows.UI.Notifications;
@@ -20,142 +22,150 @@ namespace Timetable
             BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
 
             ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-            resourceLoader = ResourceLoader.GetForViewIndependentUse();
-            
-            //main tile
-            Windows.UI.Notifications.TileUpdater mainmngr = TileUpdateManager.CreateTileUpdaterForApplication();
+                resourceLoader = ResourceLoader.GetForViewIndependentUse();
 
-            string town = null;
+                //main tile
+                Windows.UI.Notifications.TileUpdater mainmngr = TileUpdateManager.CreateTileUpdaterForApplication();
 
-            if ((bool?)localSettings.Values["location"] != false)
-                town = await Utilities.LocationFinder.GetLocation();
-           
-            foreach (var tile in mainmngr.GetScheduledTileNotifications())
-                mainmngr.RemoveFromSchedule(tile);
-            mainmngr.Clear();
+                string town = null;
 
-            var profile = NetworkInformation.GetInternetConnectionProfile();
-            NetworkCostType cost = NetworkCostType.Unknown;
-            if (profile != null)
-                cost = profile.GetConnectionCost().NetworkCostType;
+                if ((bool?)localSettings.Values["location"] != false)
+                    town = await Utilities.LocationFinder.GetLocation();
 
-            if (town != null)
-            {
-                Utilities.LineSerializer lineSerializer = new Utilities.LineSerializer(resourceLoader);
-                IList<Line> linesfromhere = await lineSerializer.readLinesFrom(town);
-                List<int> busindices = new List<int>();
+                foreach (var tile in mainmngr.GetScheduledTileNotifications())
+                    mainmngr.RemoveFromSchedule(tile);
+                mainmngr.Clear();
 
-                // update lines
-                foreach (var line in linesfromhere)
+                var profile = NetworkInformation.GetInternetConnectionProfile();
+                NetworkCostType cost = NetworkCostType.Unknown;
+                if (profile != null)
+                    cost = profile.GetConnectionCost().NetworkCostType;
+
+                if (town != null)
                 {
-                    if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date)
-                    {
-                        try { await line.updateOn(DateTime.Today); }
-                        catch (System.Net.Http.HttpRequestException) { return; }
-                        line.LastUpdated = DateTime.Today.Date;
+                    Utilities.LineSerializer lineSerializer = new Utilities.LineSerializer(resourceLoader);
+                    IList<Line> linesfromhere = await lineSerializer.readLinesFrom(town);
+                    List<int> busindices = new List<int>();
 
-                        await lineSerializer.saveLine(line);
+                  //// PLACEHOLDER
+                  //if (linesfromhere.Count == 0)
+                  //{
+                  //    XmlDocument xmlDoc = getXML(town, "0", "00", "-", "00", "-", false);
+                  //    ScheduledTileNotification scheduledUpdate = new ScheduledTileNotification(xmlDoc, new DateTimeOffset(DateTime.Now.AddSeconds(5)));
+                  //    mainmngr.AddToSchedule(scheduledUpdate);
+                  //}
+                  ////
+
+                    // update lines
+                    foreach (var line in linesfromhere)
+                    {
+                        if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date)
+                        {
+                            try { await line.updateOn(DateTime.Today); }
+                            catch (System.Net.Http.HttpRequestException) { return; }
+                            line.LastUpdated = DateTime.Today.Date;
+
+                            await lineSerializer.saveLine(line);
+                        }
+
+                        busindices.Add(0);
                     }
 
-                    busindices.Add(0);
-                }
+                    bool done = false;
+                    int minind;
+                    string prevfromtime = "";
+                    bool first = true;
 
-                bool done = false;
-                int minind;
-                string prevfromtime = "";
-                bool first = true;
-                
-                // go through all possible lines
-                while (!done)
-                {
-                    DateTime mintime = DateTime.Today.AddDays(1);
-                    minind = -1;
-
-                    for (int j = 0; j < linesfromhere.Count; j++) // find next time
+                    // go through all possible lines
+                    while (!done)
                     {
-                        if (linesfromhere[j].Buses.Count < 1 && j < linesfromhere.Count - 1)
-                            j++;
-                        else if (linesfromhere[j].Buses.Count < 1 && j == linesfromhere.Count - 1)
-                            break;
+                        DateTime mintime = DateTime.Today.AddDays(1);
+                        minind = -1;
 
-                        int i = busindices[j];
-                        if (i != -1 && i < linesfromhere[j].Buses.Count)
+                        for (int j = 0; j < linesfromhere.Count; j++) // find next time
                         {
-                            string fromtime, num, from, to;
-                            linesfromhere[j].Buses[i].TryGetValue("vonalnev", out num);
-                            linesfromhere[j].Buses[i].TryGetValue("indulasi_ido", out fromtime);
-                            linesfromhere[j].Buses[i].TryGetValue("indulasi_hely", out from);
-                            linesfromhere[j].Buses[i].TryGetValue("erkezesi_hely", out to);
+                            if (linesfromhere[j].Buses.Count < 1 && j < linesfromhere.Count - 1)
+                                j++;
+                            else if (linesfromhere[j].Buses.Count < 1 && j == linesfromhere.Count - 1)
+                                break;
+
+                            int i = busindices[j];
+                            if (i != -1 && i < linesfromhere[j].Buses.Count)
+                            {
+                                string fromtime, num, from, to;
+                                linesfromhere[j].Buses[i].TryGetValue("vonalnev", out num);
+                                linesfromhere[j].Buses[i].TryGetValue("indulasi_ido", out fromtime);
+                                linesfromhere[j].Buses[i].TryGetValue("indulasi_hely", out from);
+                                linesfromhere[j].Buses[i].TryGetValue("erkezesi_hely", out to);
+                                num = num.Split('|')[0];
+
+                                var fromtime_date = DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture);
+
+                                if (fromtime_date >= DateTime.Now && !(!(bool)roamingSettings.Values["canchange"] && num == " ∙∙∙") &&
+                                    !((bool)roamingSettings.Values["exact"] && ((linesfromhere[j].From != from && linesfromhere[j].From.Contains(",")) || (linesfromhere[j].To != to && linesfromhere[j].To.Contains(",")))))
+                                {
+                                    if (fromtime_date < mintime)
+                                    {
+                                        minind = j;
+                                        mintime = fromtime_date;
+                                    }
+                                }
+                                else if (linesfromhere[j].Buses.Count - 1 > busindices[j])
+                                {
+                                    busindices[j]++;
+                                    j--;
+                                }
+                                else
+                                    busindices[j] = -1;
+                            }
+                        }
+
+                        if (minind != -1)
+                        {
+                            int i = busindices[minind];
+                            string fromtime, num, from, to, name, totime;
+                            name = linesfromhere[minind].Name;
+                            linesfromhere[minind].Buses[i].TryGetValue("erkezesi_ido", out totime);
+                            linesfromhere[minind].Buses[i].TryGetValue("vonalnev", out num);
+                            linesfromhere[minind].Buses[i].TryGetValue("indulasi_ido", out fromtime);
+                            linesfromhere[minind].Buses[i].TryGetValue("indulasi_hely", out from);
+                            linesfromhere[minind].Buses[i].TryGetValue("erkezesi_hely", out to);
                             num = num.Split('|')[0];
 
-                            var fromtime_date = DateTime.ParseExact(fromtime, "HH:mm", CultureInfo.InvariantCulture);
+                            XmlDocument xmlDoc = getXML(name, num, fromtime, from, totime, to, false);
 
-                            if (fromtime_date >= DateTime.Now && !(!(bool)roamingSettings.Values["canchange"] && num == " ∙∙∙") &&
-                                !((bool)roamingSettings.Values["exact"] && ((linesfromhere[j].From != from && linesfromhere[j].From.Contains(",")) || (linesfromhere[j].To != to && linesfromhere[j].To.Contains(",")))))
+                            DateTime showUpdateAt;
+                            if (first)
                             {
-                                if (fromtime_date < mintime)
-                                {
-                                    minind = j;
-                                    mintime = fromtime_date;
-                                }
-                            }
-                            else if (linesfromhere[j].Buses.Count - 1 > busindices[j])
-                            {
-                                busindices[j]++;
-                                j--;
+                                showUpdateAt = DateTime.Now.AddSeconds(5);
+                                first = false;
                             }
                             else
-                                busindices[j] = -1;
+                                showUpdateAt = DateTime.Parse(prevfromtime).AddSeconds(30);
+
+                            ScheduledTileNotification scheduledUpdate = new ScheduledTileNotification(xmlDoc, new DateTimeOffset(showUpdateAt));
+                            scheduledUpdate.ExpirationTime = new DateTimeOffset(DateTime.Today.AddDays(1).AddHours(1));
+                            mainmngr.AddToSchedule(scheduledUpdate);
+
+                            prevfromtime = fromtime;
+                            if (busindices[minind] != -1 && linesfromhere[minind].Buses.Count - 1 > busindices[minind])
+                                busindices[minind]++;
+                            else
+                                busindices[minind] = -1;
                         }
-                    }
 
-                    if (minind != -1)
-                    {
-                        int i = busindices[minind];
-                        string fromtime, num, from, to, name, totime;
-                        name = linesfromhere[minind].Name;
-                        linesfromhere[minind].Buses[i].TryGetValue("erkezesi_ido", out totime);
-                        linesfromhere[minind].Buses[i].TryGetValue("vonalnev", out num);
-                        linesfromhere[minind].Buses[i].TryGetValue("indulasi_ido", out fromtime);
-                        linesfromhere[minind].Buses[i].TryGetValue("indulasi_hely", out from);
-                        linesfromhere[minind].Buses[i].TryGetValue("erkezesi_hely", out to);
-                        num = num.Split('|')[0];
-
-                        XmlDocument xmlDoc = getXML(name, num, fromtime, from, totime, to, false);
-
-                        DateTime showUpdateAt;
-                        if (first)
+                        done = true;
+                        for (int i = 0; i < busindices.Count; i++)
                         {
-                            showUpdateAt = DateTime.Now.AddSeconds(5);
-                            first = false;
+                            if (busindices[i] == linesfromhere[i].Buses.Count)
+                                busindices[i] = -1;
+                            if (busindices[i] != -1)
+                                done = false;
                         }
-                        else
-                            showUpdateAt = DateTime.Parse(prevfromtime).AddSeconds(30);
-
-                        ScheduledTileNotification scheduledUpdate = new ScheduledTileNotification(xmlDoc, new DateTimeOffset(showUpdateAt));
-                        scheduledUpdate.ExpirationTime = new DateTimeOffset(DateTime.Today.AddDays(1).AddHours(1));
-                        mainmngr.AddToSchedule(scheduledUpdate);
-
-                        prevfromtime = fromtime;
-                        if (busindices[minind] != -1 && linesfromhere[minind].Buses.Count - 1 > busindices[minind])
-                            busindices[minind]++;
-                        else
-                            busindices[minind] = -1;
-                    }
-                    
-                    done = true;
-                    for (int i = 0; i < busindices.Count; i++)
-                    {
-                        if (busindices[i] == linesfromhere[i].Buses.Count)
-                            busindices[i] = -1;
-                        if (busindices[i] != -1)
-                            done = false;
                     }
                 }
-            }
-
             deferral.Complete();
         }
     }
