@@ -615,4 +615,26 @@ szeretnéd frissíteni.</value>
     <value>● Összeomlás javítása nagyon lassú, vagy kikapcsolt internet esetén
 ● Elsődleges Élő Csempe adatai javítva</value>
   </data>
+  <data name="Home.Text" xml:space="preserve">
+    <value>Otthon</value>
+  </data>
+  <data name="NotsetWP8.Text" xml:space="preserve">
+    <value>Nincs beállítva</value>
+  </data>
+  <data name="HomeUpdate.Text" xml:space="preserve">
+    <value>Nem mentett járatok is</value>
+  </data>
+  <data name="HomeUpdateNote.Text" xml:space="preserve">
+    <value>Ha a jelenlegi városból nem indul egy elmentett járat sem, akkor a legközelebbi hazafelé menő busz jelenjen meg az Élő Csempén.</value>
+  </data>
+  <data name="Notset.Content" xml:space="preserve">
+    <value>Nincs beállítva</value>
+  </data>
+  <data name="HomeNotSet" xml:space="preserve">
+    <value>Nincs beállítva az otthoni megálló.</value>
+  </data>
+  <data name="Changelog160.Text" xml:space="preserve">
+    <value>● Beállítható egy otthoni megálló
+● Az Élő Csempe mutathat hazafelé járó buszokat akkor is, ha nincsen elmentett járat</value>
+  </data>
 </root>

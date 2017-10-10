@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -49,5 +50,14 @@ namespace Timetable
             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));
         }
 
+        private async void EditHome(object sender, TappedRoutedEventArgs e)
+        {
+            hometextbox.Visibility = Visibility.Visible;
+            homebutton.Visibility = Visibility.Collapsed;
+            await System.Threading.Tasks.Task.Delay(100);
+            hometextbox.Focus(FocusState.Programmatic);
+            hometextbox.Text = "";
+            hometextbox.ItemsSource = new System.Collections.Generic.List<string>();
+        }
     }
 }

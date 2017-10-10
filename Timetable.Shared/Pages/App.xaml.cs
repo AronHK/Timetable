@@ -65,6 +65,8 @@ namespace Timetable
             }
             if (roamingSettings.Values["sort"] == null)
                 roamingSettings.Values["sort"] = 1;
+            if (roamingSettings.Values["showhome"] == null)
+                roamingSettings.Values["showhome"] = true;
             if (roamingSettings.Values["showlog"] == null)
                 roamingSettings.Values["showlog"] = true;
             if (roamingSettings.Values["usagelog"] == null)
@@ -81,6 +83,10 @@ namespace Timetable
                 localSettings.Values["history3"] = "";
             if (localSettings.Values["history4"] == null)
                 localSettings.Values["history4"] = "";
+            if (localSettings.Values["lastlocation"] == null)
+                localSettings.Values["lastlocation"] = "";
+            if (localSettings.Values["lastupdate"] == null)
+                localSettings.Values["lastupdate"] = DateTime.Today.AddDays(-1).Date.ToString();
 
             if ((int)localSettings.Values["theme"] == 1)
                 RequestedTheme = ApplicationTheme.Dark;

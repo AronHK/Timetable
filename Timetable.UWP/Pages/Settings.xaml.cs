@@ -64,5 +64,16 @@ namespace Timetable
                 titlebg.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"]);
             }
         }
+
+        private async void EditHome(object sender, RoutedEventArgs e)
+        {
+            hometextbox.Visibility = Visibility.Visible;
+            homelabel.Visibility = Visibility.Collapsed;
+            homebutton.Visibility = Visibility.Collapsed;
+            await System.Threading.Tasks.Task.Delay(100);
+            hometextbox.Focus(FocusState.Programmatic);
+            hometextbox.Text = "";
+            hometextbox.ItemsSource = new System.Collections.Generic.List<string>();
+        }
     }
 }

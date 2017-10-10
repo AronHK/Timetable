@@ -33,7 +33,7 @@ namespace Timetable
             base.OnNavigatedTo(e);
             Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-
+            
             if (Application.Current.RequestedTheme == ApplicationTheme.Light)
             {
                 var statusBar = StatusBar.GetForCurrentView();
@@ -55,13 +55,6 @@ namespace Timetable
                     await popup.ShowAsync();
                 }
             };
-
-            if (localSettings.Values["cleanstorage"] != null && (bool)localSettings.Values["cleanstorage"] == true)
-            {
-                localSettings.Values["cleanstorage"] = false;
-                Windows.Storage.StorageFile datafile = await Windows.Storage.ApplicationData.Current.RoamingFolder.GetFileAsync("linedata");
-                await datafile.DeleteAsync();
-            }
             
             if (localSettings.Values["location"] == null)
             {

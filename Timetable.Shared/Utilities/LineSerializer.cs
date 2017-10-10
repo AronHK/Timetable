@@ -68,7 +68,7 @@ namespace Timetable.Utilities
                 IList<string> lines = await FileIO.ReadLinesAsync(datafile);
                 List<string> toDelete = new List<string>();
                 lines.Remove("");
-                foreach(string line in lines)
+                foreach (string line in lines)
                 {
                     if (line.Contains("##"))
                         toDelete.Add(line);
@@ -90,6 +90,7 @@ namespace Timetable.Utilities
                 return lines;
             }
             catch (FileNotFoundException) { return new List<string>(); }
+            catch (SerializationException) { return new List<string>(); }
         }
 
         private async Task<IList<Line>> LegacyReadLines(Stream linedata_read)

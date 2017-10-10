@@ -26,8 +26,8 @@ namespace Timetable
     /// </summary>
     public sealed partial class Search : Page
     {
-        private Windows.Storage.ApplicationDataContainer localSettings;
-        private List<Dictionary<string, string>> megallok1, megallok2;
+        private Windows.Storage.ApplicationDataContainer localSettings, roamingSettings;
+        private List<Dictionary<string, string>> stops1, stops2;
         private string searchterm1, searchterm2;
         private ResourceLoader resourceLoader;
         private string selectedDate;
@@ -60,8 +60,9 @@ namespace Timetable
 #endif
 
             localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            megallok1 = new List<Dictionary<string, string>>();
-            megallok2 = new List<Dictionary<string, string>>();
+            roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            stops1 = new List<Dictionary<string, string>>();
+            stops2 = new List<Dictionary<string, string>>();
             selectedDate = DateTime.Today.Date.ToString("yyyy-MM-dd");
 
             history = new List<string>();
@@ -98,45 +99,10 @@ namespace Timetable
             From.ItemsSource = history;
             To.ItemsSource = history;
 
-            var bounds = Window.Current.Bounds;
-            if (bounds.Width < 350)
-            {
-                From.Width = bounds.Width - 50;
-                To.Width = bounds.Width - 50;
-                Date.Width = bounds.Width - 50;
-                Time.Width = bounds.Width - 50;
-            }
             Date.Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-#if WINDOWS_UWP
-            if (bounds.Height < 730)
-            {
-                Date.Visibility = Visibility.Visible;
-                Date2.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                Date.Visibility = Visibility.Collapsed;
-                Date2.Visibility = Visibility.Visible;
-            }
-
-            if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
-            {
-                SearchButton.Visibility = Visibility.Visible;
-                commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
-
-                if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
-                {
-                    title.Margin = new Thickness(48, 10, 0, 0);
-                    XboxPanel.Margin = new Thickness(0, 0, 48, 27);
-                    commandbar.Visibility = Visibility.Collapsed;
-                    XboxPanel.Visibility = Visibility.Visible;
-                    SearchButton.Visibility = Visibility.Collapsed;
-                }
-            }
-
             Window.Current.SizeChanged += Resized;
-#endif
+            Resized(this, null);
 
             InputPane.GetForCurrentView().Showing += (s, args) =>
             {
@@ -158,6 +124,8 @@ namespace Timetable
             To.IsEnabled = false;
             Getloc1.Visibility = Visibility.Collapsed;
             Getloc2.Visibility = Visibility.Collapsed;
+            Gethome1.Visibility = Visibility.Collapsed;
+            Gethome2.Visibility = Visibility.Collapsed;
             Date.IsEnabled = false;
             Time.IsEnabled = false;
             AppbarGo.IsEnabled = false;
@@ -170,17 +138,17 @@ namespace Timetable
                 await Task.Delay(1000); // todo - replace
 
             int fromnum = -1, tonum = -1;               // find the stored bus-stop data that matches the textbox contents
-            for (int i = 0; i < megallok1.Count; i++)
+            for (int i = 0; i < stops1.Count; i++)
             {
                 string tocompare;
-                megallok1[i].TryGetValue("Nev", out tocompare);
+                stops1[i].TryGetValue("Nev", out tocompare);
                 if (tocompare == From.Text)
                     fromnum = i;
             }
-            for (int i = 0; i < megallok2.Count; i++)
+            for (int i = 0; i < stops2.Count; i++)
             {
                 string tocompare;
-                megallok2[i].TryGetValue("Nev", out tocompare);
+                stops2[i].TryGetValue("Nev", out tocompare);
                 if (tocompare == To.Text)
                     tonum = i;
             }
@@ -190,6 +158,8 @@ namespace Timetable
             To.IsEnabled = true;
             Getloc1.Visibility = Visibility.Visible;
             Getloc2.Visibility = Visibility.Visible;
+            Gethome1.Visibility = Visibility.Visible;
+            Gethome2.Visibility = Visibility.Visible;
             Date.IsEnabled = true;
             Time.IsEnabled = true;
             AppbarGo.IsEnabled = true;
@@ -224,9 +194,9 @@ namespace Timetable
                 }
                 else
                 {
-                    megallok1[fromnum].TryGetValue("MegalloID", out temp);
+                    stops1[fromnum].TryGetValue("MegalloID", out temp);
                     fromlsid = temp;
-                    megallok1[fromnum].TryGetValue("VarosID", out temp);
+                    stops1[fromnum].TryGetValue("VarosID", out temp);
                     fromsetid = temp;
                 }
 
@@ -237,20 +207,20 @@ namespace Timetable
                 }
                 else
                 {
-                    megallok2[tonum].TryGetValue("MegalloID", out temp);
+                    stops2[tonum].TryGetValue("MegalloID", out temp);
                     tolsid = temp;
-                    megallok2[tonum].TryGetValue("VarosID", out temp);
+                    stops2[tonum].TryGetValue("VarosID", out temp);
                     tosetid = temp;
                 }
                 
-                if (!history.Contains(To.Text))
+                if (!history.Contains(To.Text) && To.Text != (string)roamingSettings.Values["homename"])
                 {
                     localSettings.Values["history4"] = localSettings.Values["history3"];
                     localSettings.Values["history3"] = localSettings.Values["history2"];
                     localSettings.Values["history2"] = localSettings.Values["history1"];
                     localSettings.Values["history1"] = $"{To.Text}#{tosetid}#{tolsid}";
                 }
-                if (!history.Contains(From.Text))
+                if (!history.Contains(From.Text) && From.Text != (string)roamingSettings.Values["homename"])
                 {
                     localSettings.Values["history4"] = localSettings.Values["history3"];
                     localSettings.Values["history3"] = localSettings.Values["history2"];
@@ -271,20 +241,16 @@ namespace Timetable
         {
             Getloc1.Visibility = Visibility.Collapsed;
             Getloc2.Visibility = Visibility.Collapsed;
+            Gethome1.Visibility = Visibility.Collapsed;
+            Gethome2.Visibility = Visibility.Collapsed;
             if (((Button)sender).Name == "Getloc1")
             {
-#if WINDOWS_UWP
                 locprogress1.Visibility = Visibility.Visible;
-#endif
-
                 From.Focus(FocusState.Programmatic);
             }
             else
             {
-#if WINDOWS_UWP
                 locprogress2.Visibility = Visibility.Visible;
-#endif
-
                 To.Focus(FocusState.Programmatic);
             }
 
@@ -334,10 +300,50 @@ namespace Timetable
 
             Getloc1.Visibility = Visibility.Visible;
             Getloc2.Visibility = Visibility.Visible;
-#if WINDOWS_UWP
+            Gethome1.Visibility = Visibility.Visible;
+            Gethome2.Visibility = Visibility.Visible;
             locprogress1.Visibility = Visibility.Collapsed;
             locprogress2.Visibility = Visibility.Collapsed;
-#endif
+        }
+
+        private async void RequestHome(object sender, RoutedEventArgs e)
+        {
+            if (roamingSettings.Values["homename"] == null)
+            {
+                var dialog = new MessageDialog(resourceLoader.GetString("HomeNotSet"));
+
+                dialog.Commands.Add(new UICommand("OK"));
+                dialog.Commands.Add(new UICommand(resourceLoader.GetString("Settings"), (command) => { Frame.Navigate(typeof(Settings)); }));
+
+                dialog.CancelCommandIndex = 0;
+                dialog.DefaultCommandIndex = 1;
+
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                Dictionary<string, string> newstop = new Dictionary<string, string>();
+                newstop.Add("Nev", (string)roamingSettings.Values["homename"]);
+                newstop.Add("VarosID", (string)roamingSettings.Values["homesid"]);
+                newstop.Add("MegalloID", (string)roamingSettings.Values["homelsid"]);
+
+                if (((Button)sender).Name == "Gethome1")
+                {
+                    From.Text = (string)roamingSettings.Values["homename"];
+                    searchterm1 = (string)roamingSettings.Values["homename"];
+                    From.ItemsSource = new List<string>();
+                    stops1.Clear();
+                    stops1.Add(newstop);
+                }
+                else
+                {
+                    To.Text = (string)roamingSettings.Values["homename"];
+                    searchterm2 = (string)roamingSettings.Values["homename"];
+                    To.ItemsSource = new List<string>();
+                    stops2.Clear();
+                    stops2.Add(newstop);
+                }
+            }
         }
 
         private async void InputChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -360,88 +366,43 @@ namespace Timetable
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 string input = sender.Text;
+                List<Dictionary<string, string>> stops = await Utilities.Autocomplete.GetSuggestions(input, selectedDate);
 
-                if (sender.Name == "From") // clear old suggestions
-                    megallok1.Clear();
-                else
-                    megallok2.Clear();
-
-                using (var client = new HttpClient()) // get new suggestions
+                if (sender.Name == "From")
                 {
-                    string tosend = "{\"query\":\"get_stations2_json\",\"fieldvalue\":\"" + input + "\",\"datum\":\"" + selectedDate + "\"}";
-                    var values = new System.Collections.Generic.Dictionary<string, string>
-                    {
-                        { "json", tosend }
-                    };
+                    stops1.Clear();
+                    stops1 = stops;
+                }
+                else
+                {
+                    stops2.Clear();
+                    stops2 = stops;
+                }
 
-                    var content = new FormUrlEncodedContent(values);
-                    HttpResponseMessage response = null;
-                    try
+                List<string> suggestions = new List<string>();
+                if (sender.Name == "From")
+                {
+                    searchterm1 = input;
+                    foreach (Dictionary<string, string> stop in stops1)
                     {
-                        response = await client.PostAsync("http://menetrendek.hu/uj_menetrend/hu/ajax_response_gen.php", content);
-                        if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                            throw new HttpRequestException();
-                    }
-                    catch (Exception)
-                    {
-                        var dialog = new MessageDialog(resourceLoader.GetString("NetworkError"), resourceLoader.GetString("NetworkErrorTitle"));
-                        dialog.Commands.Add(new UICommand("OK", (command) =>
-                        {
-                             if (Frame.CanGoBack)
-                                 Frame.GoBack();
-                        }));
-                        dialog.CancelCommandIndex = 0;
-                        dialog.DefaultCommandIndex = 0;
-                    try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
-                    return;
-                    }
-
-                    var codes = await response.Content.ReadAsStringAsync();
-                    codes = Regex.Unescape(codes);
-                    if (codes.Length > 0) // process data - get names and IDs for towns/stops
-                    {
-                        codes = codes.Substring(1, codes.Length - 2);
-
-                        Regex regex = new Regex("(?<={)[^}]+?(?=})", RegexOptions.None);
-                        foreach (Match match in regex.Matches(codes))
-                        {
-                            string toParse = match.ToString();
-                            Dictionary<string, string> megallo = new Dictionary<string, string>();
-                            megallo.Add("Nev", getproperty(toParse, "lsname"));
-                            megallo.Add("VarosID", getproperty(toParse, "settlement_id"));
-                            megallo.Add("MegalloID", getproperty(toParse, "ls_id"));
-                            if (sender.Name == "From")
-                                megallok1.Add(megallo);
-                            else
-                                megallok2.Add(megallo);
-                        }
-
-                        List<string> suggestions = new List<string>();
-                        if (sender.Name == "From")
-                        {
-                            searchterm1 = input;
-                            foreach (Dictionary<string, string> megallo in megallok1)
-                            {
-                                string temp;
-                                megallo.TryGetValue("Nev", out temp);
-                                if (!temp.Contains(" vá.") && !temp.Contains(" vmh."))
-                                    suggestions.Add(temp);
-                            }
-                        }
-                        else
-                        {
-                            searchterm2 = input;
-                            foreach (Dictionary<string, string> megallo in megallok2)
-                            {
-                                string temp;
-                                megallo.TryGetValue("Nev", out temp);
-                                if (!temp.Contains(" vá.") && !temp.Contains(" vmh."))
-                                    suggestions.Add(temp);
-                            }
-                        }
-                        sender.ItemsSource = suggestions;
+                        string temp;
+                        stop.TryGetValue("Nev", out temp);
+                        if (!temp.Contains(" vá.") && !temp.Contains(" vmh."))
+                            suggestions.Add(temp);
                     }
                 }
+                else
+                {
+                    searchterm2 = input;
+                    foreach (Dictionary<string, string> stop in stops2)
+                    {
+                        string temp;
+                        stop.TryGetValue("Nev", out temp);
+                        if (!temp.Contains(" vá.") && !temp.Contains(" vmh."))
+                            suggestions.Add(temp);
+                    }
+                }
+                sender.ItemsSource = suggestions;
             }
         }
 
@@ -449,12 +410,6 @@ namespace Timetable
         {
             if (((AutoSuggestBox)sender).Text == "" && ((AutoSuggestBox)sender).Items.Count > 0)
                 ((AutoSuggestBox)sender).IsSuggestionListOpen = true;
-        }
-
-        private string getproperty(string text, string key)
-        {
-            Match match = Regex.Match(text, "(?<=" + key + "\":(\")?)[^\"]*(?=(,\"|\",\"))");
-            return match.Value;
         }
 
         private void StopChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)

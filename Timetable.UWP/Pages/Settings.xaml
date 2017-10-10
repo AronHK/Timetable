@@ -41,7 +41,11 @@
                 <TextBlock Name="updatelabel" RelativePanel.Below="note2" x:Uid="AutoUpdate" Text="Frissítés korlátozott kapcsolatokon" />
                 <ToggleSwitch RelativePanel.Below="note2" RelativePanel.RightOf="locationlabel" x:Name="AlwaysUpdate" Toggled="AlwaysUpdate_Toggled" />
 
-                <TextBlock Name="title2" RelativePanel.Below="updatelabel" x:Uid="SearchSettings" Text="Search parameters" FontSize="20" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+                <TextBlock Name="homelabel" RelativePanel.Below="updatelabel" x:Uid="Home" Text="Otthon" />
+                <Button RelativePanel.AlignRightWith="LocationEnabled" RelativePanel.Below="updatelabel" x:Uid="Notset" Name="homebutton" Content="Nincs beállítva" Style="{ThemeResource TextBlockButtonStyle}" Click="EditHome" Margin="5 35 25 0" MaxWidth="230" HorizontalAlignment="Left" />
+                <AutoSuggestBox RelativePanel.Below="updatelabel" Name="hometextbox" Width="285" Margin="0 32 0 0" Visibility="Collapsed" TextChanged="hometextbox_TextChanged" SuggestionChosen="hometextbox_SuggestionChosen" LostFocus="hometextbox_LostFocus" />
+
+                <TextBlock Name="title2" RelativePanel.Below="updatelabel" x:Uid="SearchSettings" Text="Search parameters" FontSize="20" Margin="0 90 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
 
                 <TextBlock RelativePanel.Below="title2" Name="exactlabel" Text="Pontos találatok" x:Uid="Exact" />
                 <ToggleSwitch RelativePanel.RightOf="locationlabel" RelativePanel.Below="title2" x:Name="Exactres" Toggled="Exactres_Toggled" />
@@ -93,7 +97,11 @@
                 <TextBlock Name="mins2" RelativePanel.RightOf="tileupdate" RelativePanel.Below="title3" x:Uid="Minutes" Text="perc" />
                 <TextBlock RelativePanel.Below="tileupdatetext" x:Uid="TileNote" Name="note6" Text="Missing explanation" Margin="10 15 10 0" FontSize="12" TextWrapping="Wrap" />
 
-                <TextBlock Name="title4" RelativePanel.Below="note6" x:Uid="OtherSettings" Text="Other" FontSize="20" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
+                <TextBlock RelativePanel.Below="note6" Name="homeupdatelabel" Text="Nem mentett járatok is" x:Uid="HomeUpdate" />
+                <ToggleSwitch RelativePanel.RightOf="locationlabel" RelativePanel.Below="note6" Name="homeupdatetoggle" Toggled="Home_Toggled" />
+                <TextBlock RelativePanel.Below="homeupdatelabel" x:Uid="HomeUpdateNote" Name="homeupdatetext" Margin="10 15 10 0" FontSize="12" TextWrapping="Wrap" />
+
+                <TextBlock Name="title4" RelativePanel.Below="homeupdatetext" x:Uid="OtherSettings" Text="Other" FontSize="20" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
 
                 <TextBlock RelativePanel.Below="title4" Name="themelabel" Text="Téma" x:Uid="Theme" />
                 <ComboBox RelativePanel.RightOf="locationlabel" RelativePanel.Below="title4" x:Name="Theme" SelectionChanged="ThemeChanged">

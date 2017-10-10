@@ -38,7 +38,7 @@
             <StackPanel Margin="10 0 10 20">
                 <TextBlock Name="title1" x:Uid="Privacy" Text="Location + Network" FontSize="25" Margin="0 10 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
                 
-                <TextBlock Name="locationlabel" x:Uid="LocationAccess" Text="Hozzáférés helyadatokhoz" Margin="-120 38 0 0" />
+                <TextBlock Name="locationlabel" x:Uid="LocationAccess" Text="Hozzáférés helyadatokhoz" Margin="0 38 0 0" />
                 <ToggleSwitch x:Name="LocationEnabled" Toggled="LocationEnabled_Toggled" />
                 <TextBlock x:Uid="LocationNote" Name="note1" Text="Helymeghatározás le van tiltva a rendszer által." FontSize="14" Visibility="Collapsed" Margin="5 20 5 0" />
                 <TextBlock x:Uid="LocationLink2" Name="note2" Text="Ugrás a beállításokhoz" Foreground="{ThemeResource PhoneAccentBrush}" Tapped="GotoPrivacySettings" FontSize="14" Visibility="Collapsed" Margin="5 0 5 0"/>
@@ -46,6 +46,10 @@
                 <TextBlock Name="updatelabel" x:Uid="AutoUpdate" Text="Frissítés korlátozott kapcsolatokon" />
                 <ToggleSwitch x:Name="AlwaysUpdate" Toggled="AlwaysUpdate_Toggled" />
 
+                <TextBlock Name="homelabel" x:Uid="Home" Text="Otthon" />
+                <TextBlock x:Uid="NotsetWP8" Name="homebutton" Text="Nincs beállítva" Tapped="EditHome" Foreground="{ThemeResource PhoneAccentBrush}"  Margin="5 5 0 0" HorizontalAlignment="Left" />
+                <AutoSuggestBox Name="hometextbox" Width="350" HorizontalAlignment="Left" Margin="0 -20 0 0" Visibility="Collapsed" TextChanged="hometextbox_TextChanged" SuggestionChosen="hometextbox_SuggestionChosen" LostFocus="hometextbox_LostFocus" />
+                
                 <TextBlock Name="title2" x:Uid="SearchSettings" Text="Search parameters" FontSize="25" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
 
                 <TextBlock Name="exactlabel" Text="Pontos találatok" x:Uid="Exact" />
@@ -106,6 +110,10 @@
                 </StackPanel>
                 <TextBlock x:Uid="TileNote" Name="note6" Text="Missing explanation" Margin="5 5 0 5" FontSize="14" TextWrapping="Wrap" />
 
+                <TextBlock Name="homeupdatelabel" Text="Home" x:Uid="HomeUpdate" />
+                <ToggleSwitch Name="homeupdatetoggle" Toggled="Home_Toggled" />
+                <TextBlock x:Uid="HomeUpdateNote" Name="homeupdatetext" Margin="5 0 0 5" FontSize="14" TextWrapping="Wrap" />
+                
                 <TextBlock Name="title4" x:Uid="OtherSettings" Text="Other" FontSize="25" Margin="0 30 0 -15" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
 
                 <TextBlock Name="themelabel" Text="Téma" x:Uid="Theme" />

@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.System.Profile;
 
 namespace Timetable
 {
@@ -20,7 +21,41 @@ namespace Timetable
         private void Resized(object sender, WindowSizeChangedEventArgs e)
         {
             var bounds = Window.Current.Bounds;
-            if (bounds.Height < 735)
+
+            if (bounds.Width < 500)
+            {
+                if (bounds.Width < 350)
+                {
+                    From.Width = 235;
+                    To.Width = 235;
+                    Date.Width = 300;
+                    Time.Width = 300;
+                }
+                else
+                {
+                    From.Width = 255;
+                    To.Width = 255;
+                    Date.Width = 320;
+                    Time.Width = 320;
+                }
+                
+                panel.Margin = new Thickness(0, 0, 0, bounds.Height * 0.15);
+                SearchButton.Visibility = Visibility.Collapsed;
+                commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+            }
+            else
+            {
+                From.Width = 320;
+                To.Width = 320;
+                Date.Width = 320;
+                Time.Width = 320;
+                panel.Margin = new Thickness(65, 0, 0, bounds.Height * 0.15);
+                SearchButton.Margin = new Thickness(0, 10, 65, 0);
+                SearchButton.Visibility = Visibility.Visible;
+                commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+            }
+
+            if (bounds.Height < 730)
             {
                 Date.Visibility = Visibility.Visible;
                 Date2.Visibility = Visibility.Collapsed;
@@ -29,6 +64,16 @@ namespace Timetable
             {
                 Date.Visibility = Visibility.Collapsed;
                 Date2.Visibility = Visibility.Visible;
+                panel.Margin = new Thickness(panel.Margin.Left, 0, 0, 0);
+            }
+
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
+            {
+                title.Margin = new Thickness(48, 10, 0, 0);
+                XboxPanel.Margin = new Thickness(0, 0, 48, 27);
+                commandbar.Visibility = Visibility.Collapsed;
+                XboxPanel.Visibility = Visibility.Visible;
+                SearchButton.Visibility = Visibility.Collapsed;
             }
         }
 

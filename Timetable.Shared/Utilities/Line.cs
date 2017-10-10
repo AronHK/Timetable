@@ -103,11 +103,12 @@ namespace Timetable
         }
 
         //get schedules for a specidic day
-        private async Task DoUpdateOn(string date, string hour, string minute)
+        private async Task DoUpdateOn(string date, string hour, string minute, bool forcelimited = false)
         {
             buses = new List<IDictionary<string, string>>();
             error = false;
             string responseString;
+            string napszak = forcelimited ? "3" : "0";
 
             using (var client = new HttpClient())               // query the server for the bus-line based on LineData
             {
@@ -139,7 +140,7 @@ namespace Timetable
                     { "maxvar", (String)roamingSettings.Values["wait"] },
                     { "maxwalk", (String)roamingSettings.Values["walk"] },
                     { "min", minute },
-                    { "napszak", "0" }, //download whole day (3 specific hour)
+                    { "napszak", napszak }, //download whole day?
                     { "naptipus", "0" },
                     { "odavissza", "0" },
                     { "preferencia", "1" },
@@ -199,6 +200,12 @@ namespace Timetable
             return DoUpdateOn(DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString()).AsAsyncAction();
         }
 
+        public IAsyncAction updateOn(bool forcelimited)
+        {
+            return DoUpdateOn(DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString(), forcelimited).AsAsyncAction();
+        }
+
+        [Windows.Foundation.Metadata.DefaultOverload]
         public IAsyncAction updateOn(DateTimeOffset date)
         {
             return DoUpdateOn(date.Date.ToString("yyyy-MM-dd"), DateTime.Now.Hour.ToString(), DateTime.Now.Minute.ToString()).AsAsyncAction();

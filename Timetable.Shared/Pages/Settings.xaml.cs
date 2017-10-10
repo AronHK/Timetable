@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Popups;
 using Windows.Networking.Connectivity;
+using System.Collections.Generic;
 
 namespace Timetable
 {
@@ -25,6 +26,7 @@ namespace Timetable
         ApplicationDataContainer localSettings;
         ApplicationDataContainer roamingSettings;
         ResourceLoader resourceLoader;
+        List<Dictionary<string, string>> stops;
 
         public Settings()
         {
@@ -90,6 +92,24 @@ namespace Timetable
             AlwaysUpdate.IsOn = (bool)localSettings.Values["alwaysupdate"];
             Linechange.IsOn = (bool)roamingSettings.Values["canchange"];
             Showlog.IsOn = (bool)roamingSettings.Values["showlog"];
+            homeupdatetoggle.IsOn = (bool)roamingSettings.Values["showhome"];
+            if (roamingSettings.Values["homename"] != null)
+#if WINDOWS_UWP
+            {
+                //homebutton.Content = roamingSettings.Values["homename"];
+                TextBlock content = new TextBlock();
+                content.Text = (string)roamingSettings.Values["homename"];
+                content.TextTrimming = TextTrimming.CharacterEllipsis;
+                content.Margin = new Thickness(0);
+                homebutton.Content = content;
+            }
+#elif WINDOWS_PHONE_APP
+            {
+                homebutton.Text = (string)roamingSettings.Values["homename"];
+                homebutton.TextTrimming = TextTrimming.CharacterEllipsis;
+            }
+#endif
+
 
             switch ((String)roamingSettings.Values["price"])
             {
@@ -129,6 +149,8 @@ namespace Timetable
             }
             if (width > 400)
                 changeslabel.Text = resourceLoader.GetString("ChangesLong");
+
+            homebutton.MaxWidth = width - 100;
 #endif
         }
 
@@ -315,6 +337,65 @@ namespace Timetable
         private void Showlog_Toggled(object sender, RoutedEventArgs e)
         {
             roamingSettings.Values["showlog"] = Showlog.IsOn;
+        }
+
+        private async void hometextbox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                string input = sender.Text;
+                stops = await Utilities.Autocomplete.GetSuggestions(input, "2020-01-01");
+
+                List<string> suggestions = new List<string>();
+                foreach (Dictionary<string, string> stop in stops)
+                {
+                    string temp;
+                    stop.TryGetValue("Nev", out temp);
+                    if (!temp.Contains(" vá.") && !temp.Contains(" vmh."))
+                        suggestions.Add(temp);
+                }
+                sender.ItemsSource = suggestions;
+            }
+        }
+
+        private void hometextbox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            int stopindex = -1;
+            for (int i = 0; i < stops.Count; i++)
+            {
+                string tocompare;
+                stops[i].TryGetValue("Nev", out tocompare);
+                if (tocompare == args.SelectedItem.ToString())
+                    stopindex = i;
+            }
+
+            string temp;
+            stops[stopindex].TryGetValue("MegalloID", out temp);
+            roamingSettings.Values["homelsid"] = temp;
+            stops[stopindex].TryGetValue("VarosID", out temp);
+            roamingSettings.Values["homesid"] = temp;
+            roamingSettings.Values["homename"] = args.SelectedItem.ToString();
+
+#if WINDOWS_UWP
+            homebutton.Content = args.SelectedItem.ToString();
+#elif WINDOWS_PHONE_APP
+            homebutton.Text = args.SelectedItem.ToString();
+#endif
+            hometextbox.Visibility = Visibility.Collapsed;
+            homelabel.Visibility = Visibility.Visible;
+            homebutton.Visibility = Visibility.Visible;
+        }
+
+        private void hometextbox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            hometextbox.Visibility = Visibility.Collapsed;
+            homelabel.Visibility = Visibility.Visible;
+            homebutton.Visibility = Visibility.Visible;
+        }
+
+        private void Home_Toggled(object sender, RoutedEventArgs e)
+        {
+            roamingSettings.Values["showhome"] = homeupdatetoggle.IsOn;
         }
     }
 }

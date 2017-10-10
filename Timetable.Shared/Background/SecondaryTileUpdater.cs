@@ -52,7 +52,9 @@ namespace Timetable
                         await lineSerializer.saveLine(line);
                     }
 
-                    Windows.UI.Notifications.TileUpdater updatemngr = TileUpdateManager.CreateTileUpdaterForSecondaryTile(tile.TileId);
+                    Windows.UI.Notifications.TileUpdater updatemngr = null;
+                    try { updatemngr = TileUpdateManager.CreateTileUpdaterForSecondaryTile(tile.TileId); }
+                    catch (Exception) { return; }
                     if (updatemngr.GetScheduledTileNotifications().Count == 0 || (updatemngr.GetScheduledTileNotifications().Count > 0 && updatemngr.GetScheduledTileNotifications()[0].DeliveryTime < DateTime.Today)) // if scheduled updates are outdated or nonexistent
                     {
                         updatemngr.Clear();

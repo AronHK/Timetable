@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Results.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Search.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Settings.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Autocomplete.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Line.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\LineSerializer.cs" />
   </ItemGroup>

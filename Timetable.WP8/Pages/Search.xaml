@@ -24,29 +24,33 @@
 
     <Grid Background="{ThemeResource PhoneAccentBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="70" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Rectangle Grid.Row="0" Fill="{ThemeResource PhoneAccentBrush}" Margin="-10, -50, -10, 0"  />
-        <TextBlock Grid.Row="0" Name="title" Margin="15 0" x:Uid="SearchTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="20" Foreground="White" />
+        <Rectangle Grid.Row="0" Name="titlebg" Fill="{ThemeResource PhoneAccentBrush}"  Margin="-10, -50, -10, 0" />
+        <TextBlock Grid.Row="0" Margin="15 0" Text="qareqwf" Name="title" x:Uid="SearchTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="20" Foreground="White" />
 
         <ProgressRing Grid.Row="1" Margin="0 -90 0 0" Name="inprogress" IsActive="False" Background="{x:Null}" Foreground="White" Height="60" Width="60" />
 
-        <StackPanel Name="panel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 150">
-            <StackPanel Orientation="Horizontal" Width="370">
-                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="330" />
-                <Button Name="Getloc1" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -10 0 0" />
+        <StackPanel Name="panel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 150" Width="370">
+            <StackPanel Orientation="Horizontal">
+                <AutoSuggestBox x:Name="From" x:Uid="TextboxFrom" HorizontalAlignment="Left" PlaceholderText="Induló megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="290" />
+                <Button Name="Getloc1" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -12 0 0" />
+                <Button Content="🏠" FontSize="28" Name="Gethome1" Tapped="RequestHome" BorderBrush="{x:Null}" Padding="-220 -10 0 0" />
+                <TextBlock Name="locprogress1" Text="..." Visibility="Collapsed" FontSize="35" Margin="15 -3 0 0" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Width="370">
-                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="330" />
+            <StackPanel Orientation="Horizontal">
+                <AutoSuggestBox x:Name="To" x:Uid="TextboxTo" HorizontalAlignment="Left" PlaceholderText="Érkező megálló" GotFocus="SuggestboxFocused" TextChanged="InputChanged" SuggestionChosen="StopChosen" BorderBrush="#66FFFFFF" KeyUp="HandleKeyboardEnter" Width="290" />
                 <Button Name="Getloc2" Content="◉" FontSize="33" Tapped="RequestLocation" IsTabStop="False" BorderBrush="{x:Null}" Padding="-70 -12 0 0" />
+                <Button Content="🏠" FontSize="28" Name="Gethome2" Tapped="RequestHome" BorderBrush="{x:Null}" Padding="-220 -10 0 0" />
+                <TextBlock Name="locprogress2" Text="..." Visibility="Collapsed" FontSize="35" Margin="15 -3 0 0" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 45 0">
-                <DatePicker Name="Date" Margin="0 5" Foreground="White" DateChanged="DateChanged" />
-                <TimePicker Name="Time" Margin="0 5" Foreground="White" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <DatePicker Name="Date" Margin="-5 5 0 5" Foreground="White" Width="145" HorizontalContentAlignment="Center" DateChanged="DateChanged" />
+                <TimePicker Name="Time" Margin="5" Foreground="White" Width="145" HorizontalContentAlignment="Center" />
             </StackPanel>
         </StackPanel>
     </Grid>
