@@ -637,4 +637,7 @@ szeretnéd frissíteni.</value>
     <value>● Beállítható egy otthoni megálló
 ● Az Élő Csempe mutathat hazafelé járó buszokat akkor is, ha nincsen elmentett járat</value>
   </data>
+  <data name="Changelog161.Text" xml:space="preserve">
+    <value>● Kapcsolódási hiba javítása</value>
+  </data>
 </root>

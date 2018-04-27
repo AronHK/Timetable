@@ -29,7 +29,11 @@ namespace Timetable
             //main tile
             Windows.UI.Notifications.TileUpdater mainmngr = null;
             try { mainmngr = TileUpdateManager.CreateTileUpdaterForApplication(); }
-            catch (Exception) { return; }
+            catch (Exception)
+            {
+                deferral.Complete();
+                return;
+            }
 
             string town = null;
 
@@ -37,7 +41,10 @@ namespace Timetable
                 town = await Utilities.LocationFinder.GetLocation();
 
             if ((string)localSettings.Values["lastlocation"] == town && (string)localSettings.Values["lastupdate"] == DateTime.Today.Date.ToString())
+            {
+                deferral.Complete();
                 return;
+            }
 
             foreach (var tile in mainmngr.GetScheduledTileNotifications())
                 mainmngr.RemoveFromSchedule(tile);
@@ -54,7 +61,7 @@ namespace Timetable
                 IList<Line> linesfromhere = await lineSerializer.readLinesFrom(town);
                 List<int> busindices = new List<int>();
 
-                if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && linesfromhere.Count == 0 && (bool)roamingSettings.Values["showhome"])
+                if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && linesfromhere.Count == 0 && (bool)roamingSettings.Values["showhome"] && roamingSettings.Values["homename"] != null)
                 {
                     List<Dictionary<string, string>> stops = await Utilities.Autocomplete.GetSuggestions(town, DateTime.Today.Date.ToString());
                     foreach (var stop in stops)
@@ -86,6 +93,7 @@ namespace Timetable
                                     mainmngr.AddToSchedule(scheduledUpdate);
                                 }
                             }
+                            deferral.Complete();
                             return;
                         }
                     }
@@ -97,7 +105,11 @@ namespace Timetable
                     if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date)
                     {
                         try { await line.updateOn(DateTime.Today); }
-                        catch (System.Net.Http.HttpRequestException) { return; }
+                        catch (System.Net.Http.HttpRequestException)
+                        {
+                            deferral.Complete();
+                            return;
+                        }
                         line.LastUpdated = DateTime.Today.Date;
 
                         await lineSerializer.saveLine(line);
@@ -198,10 +210,10 @@ namespace Timetable
                             done = false;
                     }
                 }
-            }
 
-            localSettings.Values["lastlocation"] = town;
-            localSettings.Values["lastupdate"] = DateTime.Today.Date.ToString();
+                localSettings.Values["lastlocation"] = town;
+                localSettings.Values["lastupdate"] = DateTime.Today.Date.ToString();
+            }
             deferral.Complete();
         }
     }

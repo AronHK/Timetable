@@ -98,7 +98,12 @@ namespace Timetable
 
         private static async void InitializeBackgroundTasks(uint frequency, string version)
         {
-            //BackgroundExecutionManager.RemoveAccess();
+            if (version != VERSION)
+            {
+                BackgroundExecutionManager.RemoveAccess();
+                //await BackgroundExecutionManager.RequestAccessAsync();
+            }
+
             bool exists = false, exists2 = false;
             foreach (var task in BackgroundTaskRegistration.AllTasks)
             {

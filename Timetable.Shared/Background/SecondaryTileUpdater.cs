@@ -46,7 +46,11 @@ namespace Timetable
                     if (((bool)localSettings.Values["alwaysupdate"] || cost == NetworkCostType.Unrestricted) && line.LastUpdated < DateTime.Today.Date) // update only if necessary
                     {
                         try { await line.updateOn(); }
-                        catch (System.Net.Http.HttpRequestException) { return; }
+                        catch (System.Net.Http.HttpRequestException)
+                        {
+                            deferral.Complete();
+                            return;
+                        }
                         line.LastUpdated = DateTime.Today.Date;
 
                         await lineSerializer.saveLine(line);
@@ -54,7 +58,11 @@ namespace Timetable
 
                     Windows.UI.Notifications.TileUpdater updatemngr = null;
                     try { updatemngr = TileUpdateManager.CreateTileUpdaterForSecondaryTile(tile.TileId); }
-                    catch (Exception) { return; }
+                    catch (Exception)
+                    {
+                        deferral.Complete();
+                        return;
+                    }
                     if (updatemngr.GetScheduledTileNotifications().Count == 0 || (updatemngr.GetScheduledTileNotifications().Count > 0 && updatemngr.GetScheduledTileNotifications()[0].DeliveryTime < DateTime.Today)) // if scheduled updates are outdated or nonexistent
                     {
                         updatemngr.Clear();
@@ -108,7 +116,11 @@ namespace Timetable
                             if (updatemngr.GetScheduledTileNotifications().Count == 0) // if there are no Buses today
                             {
                                 try { await line.updateOn(DateTime.Today.AddDays(1)); }
-                                catch (System.Net.Http.HttpRequestException) { return; }
+                                catch (System.Net.Http.HttpRequestException)
+                                {
+                                    deferral.Complete();
+                                    return;
+                                }
 
                                 if (!line.Error && line.Buses.Count > 0)
                                 {

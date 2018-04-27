@@ -37,7 +37,7 @@ namespace Timetable
                 line.Buses[i].TryGetValue("fare", out price);
                 line.Buses[i].TryGetValue("fare_90_percent", out price90);
                 line.Buses[i].TryGetValue("fare_50_percent", out price50);
-                string tosend = "{\"query\":\"jarat_kifejtes_text_json\",\"start_ls_id\":" + line.FromlsID + ",\"start_ls_name\":\"" + line.From + "\",\"stop_ls_id\":" + line.TolsID + ",\"stop_ls_name\":\"" + line.To + "\",\"fieldvalue\":{" + fieldvalue + "}}}}";
+                string tosend = "{\"query\":\"jarat_kifejtes_text_json\",\"start_ls_id\":" + line.FromlsID + ",\"start_ls_name\":\"" + line.From + "\",\"stop_ls_id\":" + line.TolsID + ",\"stop_ls_name\":\"" + line.To + "\",\"fieldvalue\":" + fieldvalue + "}";
                 tosend = tosend.Replace(' ', '+');
                 var values = new Dictionary<string, string>
                 {
@@ -64,11 +64,8 @@ namespace Timetable
                 int n = 0;
                 for (int j = 1; j < data.Length; j++)
                 {
-                    //Regex regex = new Regex("(?<={)[^}]+?(?=})", RegexOptions.Compiled);
-                    //foreach (Match match in regex.Matches(data[j]))
-                    //{
                     BusDetail detail = new BusDetail();
-                    string toParse = data[j]; //match.ToString();
+                    string toParse = data[j];
                     if (getproperty(toParse, "muvelet") == "indulás")
                         continue;
                     else if (getproperty(toParse, "muvelet") == "felszállás")
@@ -149,30 +146,6 @@ namespace Timetable
                 inprogress.Visibility = Visibility.Collapsed;
                 listscroller.Visibility = Visibility.Visible;
             }
-
-
-            /*string details = Regex.Unescape((string)e.Parameter);
-            Regex regex = new Regex("(?<={).+?(?=}}}})", RegexOptions.Compiled);
-            foreach (Match match in regex.Matches(details))
-            {
-                string toParse = match.ToString();
-                Dictionary<string, string> jarat = new Dictionary<string, string>();
-                jarat.Add("indulasi_hely", getproperty(toParse, "indulasi_hely"));
-                jarat.Add("erkezesi_hely", getproperty(toParse, "erkezesi_hely"));
-                jarat.Add("indulasi_ido", getproperty(toParse, "indulasi_ido"));
-                jarat.Add("erkezesi_ido", getproperty(toParse, "erkezesi_ido"));
-                jarat.Add("osszido", getproperty(toParse, "osszido"));
-                if (getproperty(toParse, "runcount") != "1")
-                    jarat.Add("vonalnev", " ∙∙∙");
-                else
-                    jarat.Add("vonalnev", getproperty(toParse, "vonalnev"));
-                jarat.Add("ossztav", getproperty(toParse, "ossztav"));
-                jarat.Add("fare", getproperty(toParse, "fare"));
-                jarat.Add("fare_50_percent", getproperty(toParse, "fare_50_percent"));
-                jarat.Add("fare_90_percent", getproperty(toParse, "fare_90_percent").TrimEnd('}'));
-                jarat.Add("details", getproperty(toParse, "kifejtes_postjson"));
-                Buses.Add(jarat); //Buses[id].Add(jarat)
-            }*/
         }
 
         public Details(Card card, double height)

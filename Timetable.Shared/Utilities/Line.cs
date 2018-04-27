@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Runtime.Serialization;
 using System.Net.Http;
 using Windows.Foundation;
+using Windows.Data.Json;
 
 namespace Timetable
 {
@@ -113,86 +114,92 @@ namespace Timetable
             using (var client = new HttpClient())               // query the server for the bus-line based on LineData
             {
                 Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-                var values = new Dictionary<string, string>
-                {
-                    { "datum", date },
-                    { "erk_stype", "megallo" },
-                    { "ext_settings", "block" },
-                    { "filtering", "0" },
-                    { "helyi", "No" },
-                    { "honnan", from },
-                    { "honnan_eovx", "0" },
-                    { "honnan_eovy", "0" },
-                    { "honnan_ls_id", FromlsID },
-                    { "honnan_settlement_id", FromsID },
-                    { "honnan_site_code", "0" },
-                    { "honnan_zoom", "0" },
-                    { "hour", hour },
-                    { "hova", to },
-                    { "hova_eovx", "0" },
-                    { "hova_eovy", "0" },
-                    { "hova_ls_id", TolsID },
-                    { "hova_settlement_id", TosID },
-                    { "hova_zoom", "0" },
-                    { "ind_stype", "megallo" },
-                    { "keresztul_stype", "megallo" },
-                    { "maxatszallas", (String)roamingSettings.Values["change"] },
-                    { "maxvar", (String)roamingSettings.Values["wait"] },
-                    { "maxwalk", (String)roamingSettings.Values["walk"] },
-                    { "min", minute },
-                    { "napszak", napszak }, //download whole day?
-                    { "naptipus", "0" },
-                    { "odavissza", "0" },
-                    { "preferencia", "1" },
-                    { "rendezes", "1" },
-                    { "submitted", "1" },
-                    { "talalatok", "1" },
-                    { "target", "0" },
-                    { "utirany", "oda" },
-                    { "var", "0" }
-                };
 
-                var content = new FormUrlEncodedContent(values);
-
-                var response = await client.PostAsync("http://menetrendek.hu/uj_menetrend/hu/talalatok_json.php", content);
+                var content = new StringContent(
+                    "{\"func\":\"getRoutes\",\"params\":{\"datum\":\"" + date +
+                    "\",\"erk_stype\":\"megallo\",\"ext_settings\":\"block\",\"filtering\":0,\"helyi\":\"No\",\"honnan\":\"" + from +
+                    "\",\"honnan_eovx\":\"0\",\"honnan_eovy\":\"0\",\"honnan_ls_id\":" + FromlsID + ",\"honnan_settlement_id\":\"" + FromsID +
+                    "\",\"honnan_site_code\":0,\"honnan_zoom\":0,\"hour\":\"" + hour + "\",\"hova\":\"" + to +
+                    "\",\"hova_eovx\":\"0\",\"hova_eovy\":\"0\",\"hova_ls_id\":" + TolsID + ",\"hova_settlement_id\":" + TosID +
+                    ",\"hova_site_code\":0,\"hova_zoom\":0,\"ind_stype\":\"megallo\",\"keresztul_stype\":\"megallo\",\"maxatszallas\":\"" + (String)roamingSettings.Values["change"] +
+                    "\",\"maxvar\":\"" + (String)roamingSettings.Values["wait"] + "\",\"maxwalk\":\"" + (String)roamingSettings.Values["walk"] +
+                    "\",\"min\":\"" + minute + "\",\"napszak\":" + napszak +
+                    ",\"naptipus\":0,\"odavissza\":0,\"preferencia\":\"1\",\"rendezes\":\"1\",\"submitted\":1,\"talalatok\":1,\"target\":0,\"utirany\":\"oda\",\"var\":\"0\"}}"
+                , System.Text.Encoding.UTF8, "application/json");
+                
+                var response = await client.PostAsync("http://menetrendek.hu/menetrend/interface/index.php", content);
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                     throw new HttpRequestException();
                 responseString = await response.Content.ReadAsStringAsync();
             }
 
             string raw = Regex.Unescape(responseString);            // process recieved data
-            string[] data = Regex.Split(raw, "\"talalatok\":{");
+            JsonObject json = JsonObject.Parse(raw);
 
-            if (data.Length < 2)
-                error = true;
-            else
+            string status = "";
+            try { status = json.GetNamedString("status"); }
+            catch (Exception) { status = "error"; }
+
+            if (status == "success")
             {
-                Regex regex = new Regex("(?<={).+?(?=}}}})", RegexOptions.None);
-                foreach (Match match in regex.Matches(data[1]))
+                try
                 {
-                    string toParse = match.ToString();
-                    Dictionary<string, string> jarat = new Dictionary<string, string>();
-                    jarat.Add("indulasi_hely", getproperty(toParse, "indulasi_hely"));
-                    jarat.Add("erkezesi_hely", getproperty(toParse, "erkezesi_hely"));
-                    jarat.Add("indulasi_ido", getproperty(toParse, "indulasi_ido"));
-                    jarat.Add("erkezesi_ido", getproperty(toParse, "erkezesi_ido"));
-                    jarat.Add("osszido", getproperty(toParse, "osszido"));
-                    int runcount = Int32.Parse(getproperty(toParse, "runcount"));
-                    string num = getproperty(toParse, "vonalnev", runcount);
-                    num = num.Substring(num.IndexOf('|'));
-                    num = (runcount == 1) ? num.Substring(1) + num : " ∙∙∙" + num;
-                    jarat.Add("vonalnev", num);
-                    jarat.Add("ossztav", getproperty(toParse, "ossztav"));
-                    jarat.Add("fare", getproperty(toParse, "fare", runcount));
-                    jarat.Add("fare_50_percent", getproperty(toParse, "fare_50_percent", runcount));
-                    jarat.Add("fare_90_percent", getproperty(toParse, "fare_90_percent", runcount));
-                    jarat.Add("extra", getproperty(toParse, "additional_ticket_price", runcount));
-                    string det = getdetails(toParse).Replace(Convert.ToChar(0x0).ToString(), "");
-                    jarat.Add("details", det);
-                    Buses.Add(jarat);
+                    JsonObject results = json.GetNamedObject("results");
+                    JsonObject talalatok = results.GetNamedObject("talalatok");
+                    int t = 1;
+                    while (t > 0)
+                    {
+                        JsonObject talalat = null;
+                        try { talalat = talalatok.GetNamedObject(t.ToString()); }
+                        catch (Exception) { t = 0; break; }
+                        Dictionary<string, string> jarat = new Dictionary<string, string>();
+                        jarat.Add("indulasi_hely", talalat.GetObject().GetNamedString("indulasi_hely"));
+                        jarat.Add("erkezesi_hely", talalat.GetObject().GetNamedString("erkezesi_hely"));
+                        jarat.Add("indulasi_ido", talalat.GetObject().GetNamedString("indulasi_ido"));
+                        jarat.Add("erkezesi_ido", talalat.GetObject().GetNamedString("erkezesi_ido"));
+                        jarat.Add("osszido", talalat.GetObject().GetNamedString("osszido"));
+                        jarat.Add("ossztav", talalat.GetObject().GetNamedString("ossztav"));
+                        JsonObject jaratinfok = talalat.GetObject().GetNamedObject("jaratinfok");
+                        int fare_total = 0, fare50_total = 0, fare90_total = 0, extra_total = 0, j = 0;
+                        string fare = "", fare50 = "", fare90 = "", extra = "", num = "";
+                        while (j > -1)
+                        {
+                            JsonObject jaratinfo = null;
+                            try { jaratinfo = jaratinfok.GetObject().GetNamedObject(j.ToString()); }
+                            catch (Exception)
+                            {
+                                if (j == 1)
+                                    num = num.Substring(1) + num;
+                                j = -1;
+                                break;
+                            }
+                            fare += "|" + jaratinfo.GetObject().GetNamedNumber("fare").ToString();
+                            fare50 += "|" + jaratinfo.GetObject().GetNamedNumber("fare_50_percent").ToString();
+                            fare90 += "|" + jaratinfo.GetObject().GetNamedNumber("fare_90_percent").ToString();
+                            extra += "|" + jaratinfo.GetObject().GetNamedNumber("additional_ticket_price").ToString();
+                            if (j == 1)
+                                num = " ∙∙∙" + num;
+                            num += "|" + jaratinfo.GetObject().GetNamedString("vonalnev").ToString();
+                            fare_total += (int)jaratinfo.GetObject().GetNamedNumber("fare");
+                            fare50_total += (int)jaratinfo.GetObject().GetNamedNumber("fare_50_percent");
+                            fare90_total += (int)jaratinfo.GetObject().GetNamedNumber("fare_90_percent");
+                            extra_total += (int)jaratinfo.GetObject().GetNamedNumber("additional_ticket_price");
+                            j++;
+                        }
+                        jarat.Add("fare", fare_total + fare);
+                        jarat.Add("fare_50_percent", fare50_total + fare50);
+                        jarat.Add("fare_90_percent", fare90_total + fare90);
+                        jarat.Add("extra", extra_total + extra);
+                        jarat.Add("vonalnev", num);
+                        jarat.Add("details", talalat.GetObject().GetNamedObject("kifejtes_postjson").Stringify().Replace(Convert.ToChar(0x0).ToString(), ""));
+                        Buses.Add(jarat);
+                        t++;
+                    }
                 }
-
+                catch (Exception) { }
             }
+            else
+                error = true;
         }
 
         public IAsyncAction updateOn()
@@ -219,35 +226,6 @@ namespace Timetable
         public IAsyncAction updateOn(string date, string hour, string minute)
         {
             return DoUpdateOn(date, hour, minute).AsAsyncAction();
-        }
-
-
-        private string getproperty(string text, string key)
-        {
-            Match match = Regex.Match(text, "(?<=" + key + "\":(\")?)[^\"]*(?=(,\"|\",\"))");
-            return match.Value;
-        }
-
-        private string getproperty(string text, string key, int j)
-        {
-            Match match = Regex.Match(text, "(?<=\"" + key + "\":(\")?)[^\"]*(?=(,\"|\",\"))");
-            string result = "";
-            int p = 0;
-            for (int i = 0; i < j; i++)
-            {
-                result += "|" + match.Value;
-                p += string.IsNullOrEmpty(match.Value) ? 0 : Int32.Parse(match.Value);
-                match = match.NextMatch();
-            }
-
-            result = p.ToString() + result;
-            return result;
-        }
-
-        private string getdetails(string text)
-        {
-            Match match = Regex.Match(text, "(?<=kifejtes_postjson\":{).*");
-            return match.Value;
         }
 
         public sealed override bool Equals(object obj)
@@ -278,10 +256,6 @@ namespace Timetable
                 return false;
             if (TolsID != other.TolsID)
                 return false;
-            /*if (from != other.from)
-                return false;
-            if (to != other.to)
-                return false;*/
 
             return true;
         }

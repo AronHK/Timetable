@@ -636,4 +636,7 @@ only update this line.</value>
     <value>● Added option to set your home
 ● Live Tile can show lines home even if no lines are saved</value>
   </data>
+  <data name="Changelog161.Text" xml:space="preserve">
+    <value>● Fixed connection error</value>
+  </data>
 </root>

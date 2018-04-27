@@ -44,7 +44,7 @@ namespace Timetable.Utilities
                     dialog.CancelCommandIndex = 0;
                     dialog.DefaultCommandIndex = 0;
                     try { await dialog.ShowAsync(); } catch (UnauthorizedAccessException) { }
-                    return null;
+                    return new List<Dictionary<string, string>>();
                 }
 
                 var codes = await response.Content.ReadAsStringAsync();
