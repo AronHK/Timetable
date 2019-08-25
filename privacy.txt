@@ -1,0 +1,5 @@
+##Privacy Notes
+
+'Volán Timetables' may access the user's location to determine which city they are currently in. This data is not stored or sent anywhere.
+Search parameters are used to query results from https://menetrendek.hu/ and are not stored or sent anywhere else. The application is not affiliated with https://menetrendek.hu/.
+Application settings (including an optional 'home stop') are saved on the device the application is installed on, and may be synchronized through the user's Micrososft account.
