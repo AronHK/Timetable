@@ -4,6 +4,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.System.Profile;
+using System;
 
 namespace Timetable
 {
@@ -79,14 +80,22 @@ namespace Timetable
 
         private void SyncCalendars(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
         {
-            Date.Date = Date2.SelectedDates[0];
-            selectedDate = Date.Date.Value.ToString("yyyy-MM-dd");
+            if (Date2.SelectedDates.Count > 0 && Date.Date != Date2.SelectedDates[0])
+            {
+                Date.Date = Date2.SelectedDates[0];
+                selectedDate = Date.Date.Value.ToString("yyyy-MM-dd");
+            }
         }
 
         private void SyncCalendars(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
         {
-            //Date2.SelectedDates[0] = (DateTimeOffset)Date.Date;
-            selectedDate = Date.Date.Value.ToString("yyyy-MM-dd");
+            if (Date2.SelectedDates.Count == 0 || Date.Date != Date2.SelectedDates[0])
+            {
+                Date2.SelectedDates.Clear();
+                if (Date.Date != null)
+                    Date2.SelectedDates.Add((DateTimeOffset)Date.Date);
+                selectedDate = Date.Date.Value.ToString("yyyy-MM-dd");
+            }
         }
 
         private void HandleKeyboardStart(object sender, KeyRoutedEventArgs e)

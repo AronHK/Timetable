@@ -326,7 +326,7 @@ or tomorrow...</value>
     <value>Yes</value>
   </data>
   <data name="AppbarFeedback.Label" xml:space="preserve">
-    <value>Send feedback</value>
+    <value>Feedback</value>
   </data>
   <data name="AppbarRate.Label" xml:space="preserve">
     <value>Rate and review</value>
@@ -638,5 +638,12 @@ only update this line.</value>
   </data>
   <data name="Changelog161.Text" xml:space="preserve">
     <value>● Fixed connection error</value>
+  </data>
+  <data name="Changelog162.Text" xml:space="preserve">
+    <value>● Fixed line numbers not showing
+● Design refresh</value>
+  </data>
+  <data name="TitleBar.Text" xml:space="preserve">
+    <value>Volán Timetables</value>
   </data>
 </root>

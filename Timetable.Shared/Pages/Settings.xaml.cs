@@ -38,13 +38,15 @@ namespace Timetable
 #if WINDOWS_UWP
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) // PC
             {
+                if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                    titlebarName.Visibility = Visibility.Visible;
+                titlebg.Fill = App.aBrush;
                 title.Foreground = new SolidColorBrush(Colors.White);
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.ButtonBackgroundColor = (Color)Application.Current.Resources["SystemAccentColor"];
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
                 titleBar.ButtonForegroundColor = Colors.White;
-                titleBar.BackgroundColor = (Color)Application.Current.Resources["SystemAccentColor"];
+                titleBar.BackgroundColor = Colors.Transparent;
                 titleBar.ForegroundColor = Colors.White;
-                //scroller.Width = Window.Current.Bounds.Width - 10;
                 Window.Current.Activated += WindowActivated;
                 Window.Current.SizeChanged += WindowResized;
             }
@@ -54,6 +56,8 @@ namespace Timetable
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ForegroundColor = Colors.White;
+                titlebg.Height = 100;
+                title.Margin = new Thickness(0, 15, 0, 15);
             }
             
             WindowResized(this, null);

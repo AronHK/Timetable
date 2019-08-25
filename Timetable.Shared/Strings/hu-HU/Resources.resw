@@ -640,4 +640,11 @@ szeretnéd frissíteni.</value>
   <data name="Changelog161.Text" xml:space="preserve">
     <value>● Kapcsolódási hiba javítása</value>
   </data>
+  <data name="Changelog162.Text" xml:space="preserve">
+    <value>● Járatok számai újra látszódnak
+● Frissített kinézet</value>
+  </data>
+  <data name="TitleBar.Text" xml:space="preserve">
+    <value>Volán Menetrendek</value>
+  </data>
 </root>

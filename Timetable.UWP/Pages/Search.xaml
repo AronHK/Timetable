@@ -27,7 +27,9 @@
     </Page.Resources>
 
     <RelativePanel>
-        <TextBlock Margin="10 15" Name="title" x:Uid="SearchTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="17.333" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" />
+        <TextBlock Margin="60 10" Name="titlebarName" x:Uid="TitleBar" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="12" Foreground="White" Visibility="Collapsed" />
+        
+        <TextBlock Margin="10 45" Name="title" x:Uid="SearchTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="17.333" Foreground="White" />
 
         <ProgressRing RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="inprogress" IsActive="False" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" Height="60" Width="60" />
 

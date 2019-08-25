@@ -47,13 +47,19 @@ namespace Timetable
             Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             Windows.Storage.ApplicationDataContainer roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
 
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar") && Application.Current.RequestedTheme == ApplicationTheme.Light)
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                var statusBar = StatusBar.GetForCurrentView();
-                statusBar.ForegroundColor = Colors.Black;
+                title.Margin = new Thickness(0, 10, 0, 10);
+                if (Application.Current.RequestedTheme == ApplicationTheme.Light)
+                {
+                    var statusBar = StatusBar.GetForCurrentView();
+                    statusBar.ForegroundColor = Colors.Black;
+                }
             }
-            else
+            if(ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationViewTitleBar"))
             {
+                if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                    titlebarName.Visibility = Visibility.Visible;
                 ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(500, 730));
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
                 if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
@@ -228,7 +234,8 @@ namespace Timetable
                 }
             }
 
-            await jumpList.SaveAsync();
+            try { await jumpList.SaveAsync(); }
+            catch (Exception) { }
         }
 
         private async void Rate(object sender, RoutedEventArgs e)

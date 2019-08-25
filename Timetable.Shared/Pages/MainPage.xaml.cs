@@ -219,12 +219,19 @@ namespace Timetable
 
             item1.Text = resourceLoader.GetString("Delete");
             item3.Text = resourceLoader.GetString("Rename");
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.IMenuFlyoutItem2"))
+            {
+                item1.Icon = new SymbolIcon(Symbol.UnFavorite);
+                item3.Icon = new SymbolIcon(Symbol.Rename);
+            }
 #if WINDOWS_UWP
             if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 item2.Text = resourceLoader.GetString("PinMenu");
             else
 #endif
                 item2.Text = resourceLoader.GetString("PinScreen");
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.IMenuFlyoutItem2"))
+                item2.Icon = new SymbolIcon(Symbol.Pin);
 
             bool remove = false;
             foreach (var tile in tiles)
@@ -239,6 +246,8 @@ namespace Timetable
                     else
 #endif
                         item2.Text = resourceLoader.GetString("UnpinScreen");
+                    if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.IMenuFlyoutItem2"))
+                        item2.Icon = new SymbolIcon(Symbol.UnPin);
                     remove = true;
                     break;
                 }

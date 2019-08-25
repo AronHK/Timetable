@@ -142,7 +142,7 @@ namespace Timetable
 
             if (status == "success")
             {
-                try
+                //try
                 {
                     JsonObject results = json.GetNamedObject("results");
                     JsonObject talalatok = results.GetNamedObject("talalatok");
@@ -160,6 +160,7 @@ namespace Timetable
                         jarat.Add("osszido", talalat.GetObject().GetNamedString("osszido"));
                         jarat.Add("ossztav", talalat.GetObject().GetNamedString("ossztav"));
                         JsonObject jaratinfok = talalat.GetObject().GetNamedObject("jaratinfok");
+                        JsonArray nativedata = talalat.GetObject().GetNamedArray("nativeData");
                         int fare_total = 0, fare50_total = 0, fare90_total = 0, extra_total = 0, j = 0;
                         string fare = "", fare50 = "", fare90 = "", extra = "", num = "";
                         while (j > -1)
@@ -179,7 +180,9 @@ namespace Timetable
                             extra += "|" + jaratinfo.GetObject().GetNamedNumber("additional_ticket_price").ToString();
                             if (j == 1)
                                 num = " ∙∙∙" + num;
-                            num += "|" + jaratinfo.GetObject().GetNamedString("vonalnev").ToString();
+                            //num += "|" + jaratinfo.GetObject().GetNamedString("vonalnev").ToString();
+                            string domain = nativedata[j].GetObject().GetNamedString("Domain_code").ToString();
+                            num += "|" + (domain.Length < 4 ? domain : "");
                             fare_total += (int)jaratinfo.GetObject().GetNamedNumber("fare");
                             fare50_total += (int)jaratinfo.GetObject().GetNamedNumber("fare_50_percent");
                             fare90_total += (int)jaratinfo.GetObject().GetNamedNumber("fare_90_percent");
@@ -196,7 +199,7 @@ namespace Timetable
                         t++;
                     }
                 }
-                catch (Exception) { }
+                //catch (Exception) { }
             }
             else
                 error = true;

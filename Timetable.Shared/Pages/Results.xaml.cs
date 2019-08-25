@@ -56,17 +56,24 @@ namespace Timetable
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
                 statusBar.ForegroundColor = Colors.White;
+                title.Margin = new Thickness(10, 15, 10, 15);
+                Appbar2.Margin = new Thickness(0);
+                titlebg.Height = 100;
             }
 
 #if WINDOWS_UWP
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) // PC
             {
+                if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                    titlebarName.Visibility = Visibility.Visible;
+                titlebg.Fill = App.aBrush;
+                Appbar2.Background = App.aBrush;
                 title.Foreground = new SolidColorBrush(Colors.White);
                 title2.Foreground = new SolidColorBrush(Colors.White);
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.ButtonBackgroundColor = (Color)Application.Current.Resources["SystemAccentColor"];
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
                 titleBar.ButtonForegroundColor = Colors.White;
-                titleBar.BackgroundColor = (Color)Application.Current.Resources["SystemAccentColor"];
+                titleBar.BackgroundColor = Colors.Transparent;
                 titleBar.ForegroundColor = Colors.White;
                 Window.Current.Activated += WindowActivated;
             }
@@ -409,28 +416,39 @@ namespace Timetable
         private MenuFlyout CreateContextMenu(Card card)
         {
             MenuFlyout contextMenu = new MenuFlyout();
+
             MenuFlyoutItem item1 = new MenuFlyoutItem();
+            item1.Text = resourceLoader.GetString("SetupReminder");
+            item1.Click += (sender, ev) => SetupReminder(sender, ev, card);
+
             MenuFlyoutItem item3 = new MenuFlyoutItem();
+            item3.Text = resourceLoader.GetString("Share");
+            item3.Click += (sender, ev) => ShareLine(sender, ev, card);
+
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.IMenuFlyoutItem2"))
+            {
+                item1.Icon = new SymbolIcon(Symbol.Clock);
+                item3.Icon = new SymbolIcon(Symbol.Share);
+            }
 #if WINDOWS_UWP
             MenuFlyoutItem item2 = new MenuFlyoutItem();
-            MenuFlyoutItem item4 = new MenuFlyoutItem();
-            MenuFlyoutItem item5 = new MenuFlyoutItem();
-#endif
-
-            item1.Text = resourceLoader.GetString("SetupReminder");
-            item3.Text = resourceLoader.GetString("Share");
-#if WINDOWS_UWP
             item2.Text = resourceLoader.GetString("Copy");
-            item4.Text = resourceLoader.GetString("DeleteLine");
-            item5.Text = resourceLoader.GetString("RenameLine");
-#endif
-
-            item1.Click += (sender, ev) => SetupReminder(sender, ev, card);
-            item3.Click += (sender, ev) => ShareLine(sender, ev, card);
-#if WINDOWS_UWP
             item2.Click += (sender, ev) => CopyLine(sender, ev, card);
+
+            MenuFlyoutItem item4 = new MenuFlyoutItem();
+            item4.Text = resourceLoader.GetString("DeleteLine");
             item4.Click += (sender, ev) => Unsave(sender, ev);
+
+            MenuFlyoutItem item5 = new MenuFlyoutItem();
+            item5.Text = resourceLoader.GetString("RenameLine");
             item5.Click += (sender, ev) => Rename(sender, ev);
+
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.IMenuFlyoutItem2"))
+            {
+                item2.Icon = new SymbolIcon(Symbol.Copy);
+                item4.Icon = new SymbolIcon(Symbol.UnFavorite);
+                item5.Icon = new SymbolIcon(Symbol.Rename);
+            }
 
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
             {

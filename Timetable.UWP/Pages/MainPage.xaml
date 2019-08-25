@@ -19,7 +19,8 @@
     </Page.Resources>
     
     <RelativePanel Name="mainpanel" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="10 5 10 0">
-        <TextBlock Text="Saved searches:" Name="title" x:Uid="Maintitle" HorizontalAlignment="Left" FontFamily="Segoe UI Black" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" Margin="0 10" />
+        <TextBlock Margin="10 5" Name="titlebarName" x:Uid="TitleBar" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="12" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" Visibility="Collapsed" />
+        <TextBlock Text="Saved searches:" Name="title" x:Uid="Maintitle" HorizontalAlignment="Left" FontFamily="Segoe UI Black" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" Margin="0 40" />
         <GridView RelativePanel.Below="title" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Name="LineList" Margin="0 10 0 0" IsItemClickEnabled="True" ItemClick="itemclick">
         </GridView>
         <TextBlock Name="error" Text="ERROR" x:Uid="Notfound" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0 100 0 0" Foreground="{ThemeResource AppBarItemDisabledForegroundThemeBrush}" />
@@ -45,9 +46,9 @@
             <AppBarButton Name="AppbarUpdate" x:Uid="AppbarUpdate" Label="Frissítés" Icon="Sync" IsEnabled="False" Click="Update" />
             <AppBarButton Label="Keresés" x:Uid="AppbarSearch" Icon="Find" Click="StartSearch" />
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="É" x:Uid="AppbarRate" Click="Rate" />
-                <AppBarButton Label="V" Name="AppbarFeedback" x:Uid="AppbarFeedback" Click="Feedback" Visibility="Collapsed" />
-                <AppBarButton Label="Beállítások" x:Uid="AppbarSettings" Click="GotoSettings" />
+                <AppBarButton Label="É" Icon="Favorite" x:Uid="AppbarRate" Click="Rate" />
+                <AppBarButton Label="V" Icon="LikeDislike" Name="AppbarFeedback" x:Uid="AppbarFeedback" Click="Feedback" Visibility="Collapsed" />
+                <AppBarButton Label="Beállítások" Icon="Setting" x:Uid="AppbarSettings" Click="GotoSettings" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

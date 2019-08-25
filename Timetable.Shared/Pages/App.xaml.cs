@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -13,6 +14,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Timetable
@@ -22,6 +24,8 @@ namespace Timetable
     /// </summary>
     sealed partial class App : Application
     {
+        public static Brush aBrush;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -183,8 +187,30 @@ namespace Timetable
             }*/
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // title bar customization
 #if WINDOWS_UWP
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.AcrylicBrush"))
+            {
+                aBrush = new AcrylicBrush()
+                {
+                    BackgroundSource = AcrylicBackgroundSource.HostBackdrop,
+                    TintOpacity = 0.6
+                };
+
+                if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                {
+                    ((AcrylicBrush)aBrush).TintColor = (Color)Resources["SystemAccentColorDark2"];
+                    ((AcrylicBrush)aBrush).FallbackColor = (Color)Resources["SystemAccentColorDark2"];
+                }
+                else
+                {
+                    ((AcrylicBrush)aBrush).TintColor = (Color)Resources["SystemAccentColor"];
+                    ((AcrylicBrush)aBrush).FallbackColor = (Color)Resources["SystemAccentColor"];
+                }
+            }
+            else
+                aBrush = Resources["SystemControlBackgroundAccentBrush"] as SolidColorBrush;
+
+            // title bar customization
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar")) // mobile
 #endif
             {
@@ -195,11 +221,12 @@ namespace Timetable
 #if WINDOWS_UWP
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) // PC
             {
+                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.ButtonBackgroundColor = (Color)Current.Resources["SystemAccentColor"];
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 titleBar.ButtonForegroundColor = Colors.White;
-                titleBar.BackgroundColor = (Color)Current.Resources["SystemAccentColor"];
-                titleBar.ForegroundColor = Colors.White;
+                titleBar.ButtonInactiveForegroundColor = Colors.Gray;
             }
 
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")

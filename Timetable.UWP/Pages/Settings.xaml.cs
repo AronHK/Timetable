@@ -61,7 +61,7 @@ namespace Timetable
             else
             {
                 title.Foreground = new SolidColorBrush(Colors.White);
-                titlebg.Fill = new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"]);
+                titlebg.Fill = App.aBrush;
             }
         }
 

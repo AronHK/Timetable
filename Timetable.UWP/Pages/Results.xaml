@@ -32,8 +32,8 @@
 
     <RelativePanel Name="mainpanel" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <Rectangle Name="titlebg" Height="100" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Fill="{ThemeResource SystemControlBackgroundAccentBrush}" Margin="-50, -50, -50, 0"  />
-        <CommandBar Visibility="Collapsed" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Name="Appbar2" Foreground="White" Background="{ThemeResource SystemControlBackgroundAccentBrush}" >
+        <Rectangle Name="titlebg" Height="135" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Fill="{ThemeResource SystemControlBackgroundAccentBrush}" Margin="-50, -50, -50, 0"  />
+        <CommandBar Margin="0 35" Visibility="Collapsed" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Name="Appbar2" Foreground="White" Background="{ThemeResource SystemControlBackgroundAccentBrush}" >
             <AppBarButton Name="AppbarUnPin2" Foreground="White" x:Uid="AppbarUnpin" Label="Levétel" Icon="UnPin" Tapped="UnPin" Visibility="Collapsed" />
             <AppBarButton Name="AppbarPin2" Foreground="White" x:Uid="AppbarPin" Label="Kitűzés" Icon="Pin" Tapped="Pin" Visibility="Collapsed" />
             <AppBarButton Name="AppbarSave2" Foreground="White" x:Uid="AppbarSave" Label="Mentés" Icon="Save" Tapped="Save" IsEnabled="False" />
@@ -57,7 +57,8 @@
                 <TextBlock Name="title2" Margin="10 15" Text="ASD" x:Uid="ResultTitle" FontFamily="Segoe UI Black" TextTrimming="CharacterEllipsis" FontSize="17.333" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" />
             </CommandBar.Content>
         </CommandBar>
-        <TextBlock Name="title" Margin="10 15" Text="ASD" x:Uid="ResultTitle" TextTrimming="CharacterEllipsis" FontFamily="Segoe UI Black" FontSize="17.333" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" />
+        <TextBlock Margin="60 10" Name="titlebarName" x:Uid="TitleBar" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe UI Black" FontSize="12" Foreground="White" Visibility="Collapsed" />
+        <TextBlock Name="title" Margin="10 50" Text="ASD" x:Uid="ResultTitle" TextTrimming="CharacterEllipsis" FontFamily="Segoe UI Black" FontSize="17.333" Foreground="{ThemeResource SystemControlBackgroundBaseHighBrush}" />
 
         <ProgressRing Name="inprogress" Margin="0 100 0 0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" IsActive="True" Background="{x:Null}" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" Height="60" Width="60" />
         <GridView Name="LineList" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="titlebg" Margin="0 1 0 0" Padding="10 0" IsItemClickEnabled="True" ItemClick="LinelistItemclick">

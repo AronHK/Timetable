@@ -41,21 +41,45 @@ namespace Timetable
             resourceLoader = ResourceLoader.GetForCurrentView();
 
 #if WINDOWS_UWP
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar") && Application.Current.RequestedTheme == ApplicationTheme.Light)
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 #endif
             {
-                var statusBar = StatusBar.GetForCurrentView();
-                statusBar.ForegroundColor = Colors.White;
+                StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
+                title.Margin = new Thickness(10);
             }
 #if WINDOWS_UWP
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) // PC
             {
-                title.Foreground = new SolidColorBrush(Colors.White);
+                if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                    titlebarName.Visibility = Visibility.Visible;
+                Background = App.aBrush;
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.ButtonBackgroundColor = (Color)Application.Current.Resources["SystemAccentColor"];
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 titleBar.ButtonForegroundColor = Colors.White;
-                titleBar.BackgroundColor = (Color)Application.Current.Resources["SystemAccentColor"];
-                titleBar.ForegroundColor = Colors.White;
+                titleBar.ButtonInactiveForegroundColor = Colors.Gray;
+
+                if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.AcrylicBrush"))
+                {
+                    AcrylicBrush dark = new AcrylicBrush()
+                    {
+                        BackgroundSource = AcrylicBackgroundSource.HostBackdrop,
+                        TintOpacity = 0.8,
+                        TintColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) ? (Color)Resources["SystemAccentColorDark3"] : (Color)Resources["SystemAccentColorLight1"],
+                        FallbackColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) ? (Color)Resources["SystemAccentColorDark3"] : (Color)Resources["SystemAccentColorLight1"]
+                    };
+                    Date2.Background = dark;
+                    Date2.OutOfScopeBackground = dark;
+
+                    AcrylicBrush light = new AcrylicBrush()
+                    {
+                        BackgroundSource = AcrylicBackgroundSource.HostBackdrop,
+                        TintOpacity = 0.9,
+                        TintColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) ? (Color)Resources["SystemAccentColorDark1"] : (Color)Resources["SystemAccentColor"],
+                        FallbackColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) ? (Color)Resources["SystemAccentColorDark1"] : (Color)Resources["SystemAccentColor"]
+                    };
+                    Date2.CalendarItemBackground = light;
+                }
             }
 #endif
 
@@ -100,6 +124,8 @@ namespace Timetable
             To.ItemsSource = history;
 
             Date.Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            Date2.SetDisplayDate((DateTimeOffset)Date.Date);
+            Time.Time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
             Window.Current.SizeChanged += Resized;
             Resized(this, null);

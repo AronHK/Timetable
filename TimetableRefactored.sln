@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.WP8", "Timetable.WP8\Timetable.WP8.csproj", "{43EE6FA8-6E62-4035-AD30-48E7F9CE736C}"
 EndProject
@@ -12,6 +12,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.UWP.Background", "Timetable.UWP.Background\Timetable.UWP.Background.csproj", "{1633DF8E-5B6F-49C5-8CAA-E38F7647A78D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.WP8.Background", "Timetable.WP8.Background\Timetable.WP8.Background.csproj", "{56E10EF2-EC0A-4B4B-ABFA-62D0C9BB1D29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4510E603-06DC-4C4A-9781-8E1563EF0572}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Desktop\privacy.txt = ..\..\..\..\Desktop\privacy.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -111,5 +116,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45DFAA90-A5A5-4CD2-8D67-D87977565E0B}
 	EndGlobalSection
 EndGlobal
